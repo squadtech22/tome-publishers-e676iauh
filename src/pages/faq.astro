@@ -1,0 +1,136 @@
+---
+import Base from '~/layouts/Base.astro';
+
+const groups = [
+  {
+    heading: 'Working with TOME',
+    faqs: [
+      {
+        q: 'What does it cost?',
+        a: 'It depends entirely on what the book needs, which is why we scope every project individually rather than selling packages. A manuscript that needs proofreading and a cover is a different proposition from one that needs ghostwriting from an outline. You get a written quote before any work begins, and it does not change unless the scope does.',
+      },
+      {
+        q: 'Do you take a cut of royalties?',
+        a: 'No. You keep your royalties in full. We are paid for the work we do, not for a permanent share of what your book earns afterwards.',
+      },
+      {
+        q: 'Who owns the rights?',
+        a: 'You do, throughout. You also keep the production files — the typeset interior, the cover artwork, the lot — at the end of the project. If you later want to move to another publisher, nothing here holds you back.',
+      },
+      {
+        q: 'How long does it take?',
+        a: 'Nine to fourteen months for a full engagement, from first reading to publication. Editorial is the longest phase. If you have a genuine fixed deadline, tell us early — we can often work to it, but only if we know about it before we start.',
+      },
+    ],
+  },
+  {
+    heading: 'Submissions',
+    faqs: [
+      {
+        q: 'Does my manuscript need to be finished?',
+        a: 'No. We work with authors at every stage, from a one-paragraph idea to a fully revised draft. What changes is which services you need, not whether we will talk to you.',
+      },
+      {
+        q: 'Do you reject submissions?',
+        a: 'Yes, regularly. Sometimes the book is not ready. Sometimes it is good but we are the wrong home for it. We tell you which, and why, rather than sending a form rejection.',
+      },
+      {
+        q: 'What genres do you publish?',
+        a: 'Literary fiction, mystery, poetry, memoir and serious non-fiction, primarily. We are not a good fit for highly illustrated books, textbooks, or anything requiring specialist academic peer review.',
+      },
+      {
+        q: 'Can I submit a book that was previously published?',
+        a: 'Often, yes — provided the rights have genuinely reverted to you. Bring the paperwork and we will look.',
+      },
+    ],
+  },
+  {
+    heading: 'Editorial and production',
+    faqs: [
+      {
+        q: 'Will you change my voice?',
+        a: 'No. Line editing sharpens your voice; it does not replace it with ours. You approve every change, and you can reject any of them. Editors who overwrite authors are doing the job badly.',
+      },
+      {
+        q: 'Is copyediting the same as proofreading?',
+        a: 'No, and anyone telling you otherwise is selling you one pass instead of two. Copyediting handles grammar, consistency and fact-checking on the edited manuscript. Proofreading catches what survived, on the typeset pages, with fresh eyes.',
+      },
+      {
+        q: 'Do I get a say in the cover?',
+        a: 'Yes. You see directions early, while changing course is still cheap, and you approve the final design. We will argue for what we think sells the book, but it is your name on it.',
+      },
+      {
+        q: 'Where will my book be sold?',
+        a: 'Print and ebook distribution to the major retailers and to bookshops that order through standard wholesale channels. Specific territories and terms are set out in your scope document.',
+      },
+    ],
+  },
+];
+
+// FAQPage structured data — flattened across all groups.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: groups.flatMap((group) =>
+    group.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  ),
+};
+---
+
+<Base
+  title="FAQ"
+  description="Costs, rights, royalties, timelines and submissions — the questions authors ask TOME Publishers most often, answered plainly."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">Questions</p>
+      <h1 class="text-ivory">Frequently asked</h1>
+      <p class="editorial mt-6 max-w-xl text-ivory/75">
+        The things authors actually want to know, answered without hedging.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-3xl px-6 py-16">
+    {
+      groups.map((group) => (
+        <section class="mb-16 last:mb-0">
+          <h2 class="label border-b border-rule-gold pb-3 text-burgundy">{group.heading}</h2>
+
+          <div class="mt-2">
+            {group.faqs.map((faq) => (
+              <details class="group border-b border-charcoal/10 py-5">
+                <summary class="flex cursor-pointer list-none items-start justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                  <span class="editorial text-h4 text-burgundy">{faq.q}</span>
+                  <span
+                    aria-hidden="true"
+                    class="mt-1.5 shrink-0 text-rule-gold transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p class="editorial mt-4 pr-10 text-charcoal/80">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <div class="border-t border-rule-gold/40 pt-12 text-center">
+      <p class="editorial text-charcoal/75">Still unanswered?</p>
+      <a
+        href="/contact"
+        class="label mt-6 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
+      >
+        Ask us directly
+      </a>
+    </div>
+  </div>
+</Base>

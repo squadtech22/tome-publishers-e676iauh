@@ -1,0 +1,51 @@
+---
+import Base from '~/layouts/Base.astro';
+import { getAuthors } from '~/lib/content';
+
+const authors = await getAuthors();
+---
+
+<Base
+  title="Authors"
+  description="The writers published by TOME — novelists, poets, memoirists and journalists we are proud to have on the list."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">The List</p>
+      <h1 class="text-ivory">Authors</h1>
+      <p class="editorial mt-6 max-w-xl text-ivory/75">
+        We publish few books a year, deliberately. These are the writers behind them.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-5xl px-6 py-16">
+    <ul class="grid gap-x-12 gap-y-12 sm:grid-cols-2">
+      {
+        authors.map((author) => (
+          <li class="border-t border-rule-gold/40 pt-8">
+            <h2 class="text-h4">
+              <a href={`/authors/${author.slug}`} class="hover:text-burgundy/70 transition-colors">
+                {author.name}
+              </a>
+            </h2>
+
+            {author.profile?.data.location && (
+              <p class="metadata mt-1.5 text-label uppercase tracking-wider text-charcoal/50">
+                {author.profile.data.location}
+              </p>
+            )}
+
+            {author.profile?.data.bio && (
+              <p class="editorial mt-4 text-charcoal/75">{author.profile.data.bio}</p>
+            )}
+
+            <p class="metadata mt-4 text-small text-charcoal/55">
+              {author.books.length} {author.books.length === 1 ? 'title' : 'titles'} with TOME
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>

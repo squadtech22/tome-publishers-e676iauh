@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   TOME Publishers — brand tokens
+   Source of truth. Never hardcode a hex or a font stack elsewhere.
+   --------------------------------------------------------------- */
+
+@theme {
+  /* --- Colour ---------------------------------------------------
+     Contrast notes (WCAG AA, normal text needs 4.5:1):
+       antique-gold on burgundy ....... ~9.0:1  PASS
+       ivory       on burgundy ....... ~15.4:1  PASS
+       charcoal    on ivory .......... ~14.9:1  PASS
+       burgundy    on ivory .......... ~15.2:1  PASS
+       muted-gold  on ivory ..........  ~2.0:1  FAIL — decorative only
+     `muted-gold` is deliberately named `--color-rule-gold` so it reads
+     as a rule/divider colour and is awkward to reach for as body text. */
+  --color-burgundy: #2b0f14;
+  --color-charcoal: #201c1d;
+  --color-ivory: #f5f0e6;
+  --color-gold: #e8c77a;        /* Antique Gold — safe for text on dark */
+  --color-rule-gold: #c9a45e;   /* Muted Gold — rules, dividers, decorative numerals */
+
+  /* --- Type families -------------------------------------------
+     Rockwell is licensed and NOT loaded as a webfont; the wordmark
+     ships as inline SVG. This stack exists only as a fallback if a
+     licensed copy is ever added. */
+  --font-wordmark: "Rockwell", "Zilla Slab", Georgia, serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-editorial: "EB Garamond", Georgia, serif;
+  --font-body: "Inter Variable", "Inter", system-ui, sans-serif;
+
+  /* --- Type scale (fluid, clamped to the brand board's ranges) --- */
+  --text-h1: clamp(3.25rem, 1.6rem + 4.6vw, 5rem);        /* 52 → 80 */
+  --text-h2: clamp(2.25rem, 1.4rem + 2.4vw, 3.5rem);      /* 36 → 56 */
+  --text-h3: clamp(1.75rem, 1.4rem + 1.0vw, 2.25rem);     /* 28 → 36 */
+  --text-h4: clamp(1.25rem, 1.1rem + 0.5vw, 1.625rem);    /* 20 → 26 */
+  --text-body: clamp(1.0625rem, 1.0rem + 0.2vw, 1.1875rem); /* 17 → 19 */
+  --text-small: clamp(0.8125rem, 0.78rem + 0.1vw, 0.9375rem); /* 13 → 15 */
+  --text-label: clamp(0.6875rem, 0.66rem + 0.1vw, 0.8125rem);  /* 11 → 13 */
+}
+
+/* --- Base ------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.1;
+    text-wrap: balance;
+    color: var(--color-burgundy);
+  }
+
+  h4, h5, h6 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-burgundy);
+  }
+
+  h1 { font-size: var(--text-h1); }
+  h2 { font-size: var(--text-h2); }
+  h3 { font-size: var(--text-h3); }
+  h4 { font-size: var(--text-h4); }
+
+  p { text-wrap: pretty; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* --- Brand utilities -------------------------------------------- */
+
+@utility label {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+@utility editorial {
+  font-family: var(--font-editorial);
+  line-height: 1.6;
+}
+
+/* Numerals, dates, prices and metadata — Inter Medium, tabular. */
+@utility metadata {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Long-form markdown -----------------------------------------
+   Hand-rolled rather than pulling in @tailwindcss/typography, so the
+   editorial serif and brand rules stay under our control.
+   Applied to rendered <Content /> output. */
+
+@layer components {
+  .prose-tome {
+    font-family: var(--font-editorial);
+    font-size: var(--text-body);
+    line-height: 1.75;
+    color: var(--color-charcoal);
+  }
+
+  .prose-tome > * + * { margin-top: 1.35em; }
+
+  .prose-tome h2 {
+    font-size: var(--text-h3);
+    margin-top: 2.2em;
+    margin-bottom: 0.6em;
+  }
+
+  .prose-tome h3 {
+    font-size: var(--text-h4);
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose-tome a {
+    color: var(--color-burgundy);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-rule-gold);
+  }
+
+  .prose-tome a:hover { text-decoration-thickness: 2px; }
+
+  .prose-tome strong { font-weight: 600; }
+
+  .prose-tome blockquote {
+    border-left: 3px solid var(--color-rule-gold);
+    padding-left: 1.5rem;
+    margin-left: 0;
+    font-style: italic;
+    font-size: var(--text-h4);
+    line-height: 1.5;
+    color: var(--color-burgundy);
+  }
+
+  .prose-tome ul,
+  .prose-tome ol {
+    padding-left: 1.4rem;
+  }
+
+  .prose-tome ul { list-style: disc; }
+  .prose-tome ol { list-style: decimal; }
+  .prose-tome li::marker { color: var(--color-rule-gold); }
+  .prose-tome li + li { margin-top: 0.5em; }
+
+  .prose-tome hr {
+    border: 0;
+    border-top: 1px solid var(--color-rule-gold);
+    opacity: 0.5;
+    margin: 3em 0;
+  }
+
+  /* Tables can exceed the measure — let them scroll rather than
+     forcing the page body to scroll horizontally. */
+  .prose-tome table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+  }
+
+  .prose-tome th,
+  .prose-tome td {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-charcoal) 15%, transparent);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .prose-tome th {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: var(--text-label);
+    color: var(--color-burgundy);
+  }
+
+  .prose-tome code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: color-mix(in srgb, var(--color-rule-gold) 18%, transparent);
+    padding: 0.15em 0.4em;
+  }
+
+  .prose-tome img { max-width: 100%; height: auto; }
+}

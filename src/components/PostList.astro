@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '~/lib/content';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+const { posts } = Astro.props;
+---
+
+<ul class="divide-y divide-charcoal/10">
+  {
+    posts.map((post) => (
+      <li>
+        <a href={`/journal/${post.id}`} class="group block py-10">
+          <p class="metadata text-label uppercase tracking-wider text-charcoal/50">
+            <span class="text-rule-gold">{post.data.category}</span>
+            <span aria-hidden="true" class="mx-2 opacity-40">
+              /
+            </span>
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
+          </p>
+
+          <h2 class="mt-3 text-h3 group-hover:text-burgundy/70 transition-colors">
+            {post.data.title}
+          </h2>
+
+          <p class="editorial mt-3 max-w-2xl text-charcoal/75">{post.data.description}</p>
+
+          <p class="label mt-5 text-burgundy">
+            Read
+            <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">
+              &rarr;
+            </span>
+          </p>
+        </a>
+      </li>
+    ))
+  }
+</ul>

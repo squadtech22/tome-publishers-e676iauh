@@ -1,0 +1,67 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '~/layouts/Base.astro';
+import BookGrid from '~/components/BookGrid.astro';
+import { getAuthors, type AuthorSummary } from '~/lib/content';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const authors = await getAuthors();
+
+  return authors.map((author) => ({
+    params: { slug: author.slug },
+    props: { author },
+  }));
+};
+
+interface Props {
+  author: AuthorSummary;
+}
+
+const { author } = Astro.props;
+const profile = author.profile;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: author.name,
+  ...(profile?.data.bio ? { description: profile.data.bio } : {}),
+  ...(profile?.data.role ? { jobTitle: profile.data.role } : {}),
+  worksFor: { '@type': 'Organization', name: 'TOME Publishers' },
+};
+---
+
+<Base
+  title={author.name}
+  description={profile?.data.bio ?? `Books by ${author.name}, published by TOME Publishers.`}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-3xl px-6 py-20">
+      <nav aria-label="Breadcrumb" class="label mb-8 text-rule-gold">
+        <a href="/authors" class="hover:text-gold transition-colors">Authors</a>
+      </nav>
+
+      <h1 class="text-ivory">{author.name}</h1>
+
+      {
+        (profile?.data.role || profile?.data.location) && (
+          <p class="metadata mt-4 text-label uppercase tracking-wider text-rule-gold">
+            {[profile?.data.role, profile?.data.location].filter(Boolean).join(' · ')}
+          </p>
+        )
+      }
+
+      {profile?.data.bio && <p class="editorial mt-8 text-h4 text-ivory/80">{profile.data.bio}</p>}
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    <h2 class="text-h3">
+      {author.books.length === 1 ? 'The book' : 'The books'}
+    </h2>
+    <div class="mt-10">
+      <BookGrid books={author.books} />
+    </div>
+  </div>
+</Base>

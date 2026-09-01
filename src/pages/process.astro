@@ -1,0 +1,119 @@
+---
+import Base from '~/layouts/Base.astro';
+
+const steps = [
+  {
+    n: '01',
+    title: 'The reading',
+    duration: '1–2 weeks',
+    body: 'You send us the manuscript, or the outline, or the idea. An editor reads it properly and writes back with an honest assessment — including, sometimes, that we are not the right home for it.',
+    detail: 'There is no charge for this and no obligation on either side.',
+  },
+  {
+    n: '02',
+    title: 'The plan',
+    duration: '1 week',
+    body: 'If we both want to continue, we scope the work: which services the book needs, in what order, on what timeline, at what cost. You get it in writing before anything begins.',
+    detail: 'No package tiers. Books are not interchangeable and neither are their requirements.',
+  },
+  {
+    n: '03',
+    title: 'Editorial',
+    duration: '2–6 months',
+    body: 'Structural work first, then line editing, then copyediting and proofreading as separate passes. You see and approve every stage. Nothing changes in your book without your agreement.',
+    detail: 'This is the longest phase, and the one that most determines whether the book is any good.',
+  },
+  {
+    n: '04',
+    title: 'Design & production',
+    duration: '6–10 weeks',
+    body: 'Cover concepts, interior typesetting, and production specification. You review cover directions early, while changing course is still cheap.',
+    detail: 'Runs partly in parallel with late-stage editorial.',
+  },
+  {
+    n: '05',
+    title: 'Launch',
+    duration: '3–4 months',
+    body: 'Positioning, publicity, reviewer outreach and retail setup. Most of this happens before publication day, because a launch is the end of the marketing, not the start of it.',
+    detail: 'We begin this while the book is still in production, never after.',
+  },
+  {
+    n: '06',
+    title: 'After',
+    duration: 'Ongoing',
+    body: 'Sales reporting, reprint decisions, and the long tail — which for a good book is where most of the readers eventually come from.',
+    detail: 'You keep your rights and your files, permanently.',
+  },
+];
+---
+
+<Base
+  title="Process"
+  description="How publishing with TOME actually works — six stages from first reading to long-tail sales, with realistic timelines."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <p class="label text-rule-gold mb-5">How It Works</p>
+      <h1 class="text-ivory max-w-3xl">From manuscript to bookshelf</h1>
+      <p class="editorial mt-8 max-w-2xl text-h4 text-ivory/80">
+        Roughly nine to fourteen months, start to finish. Anyone promising you
+        eight weeks is skipping something.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-3xl px-6 py-20">
+    <ol class="relative">
+      {
+        steps.map((step, index) => (
+          <li class="relative pb-14 pl-10 last:pb-0 sm:pl-16">
+            {index < steps.length - 1 && (
+              <span
+                aria-hidden="true"
+                class="absolute left-[7px] top-3 h-full w-px bg-rule-gold/40 sm:left-[11px]"
+              />
+            )}
+            <span
+              aria-hidden="true"
+              class="absolute left-0 top-2 block h-3.5 w-3.5 rotate-45 border border-rule-gold bg-ivory sm:h-[23px] sm:w-[23px]"
+            />
+
+            <p class="metadata text-label uppercase tracking-widest text-rule-gold">
+              {step.n}
+              <span class="mx-2 opacity-50">·</span>
+              {step.duration}
+            </p>
+
+            <h2 class="mt-2 text-h3">{step.title}</h2>
+            <p class="editorial mt-4 text-charcoal/80">{step.body}</p>
+            <p class="editorial mt-3 text-small italic text-charcoal/55">{step.detail}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <section class="bg-charcoal/[0.03]">
+    <div class="mx-auto max-w-3xl px-6 py-20">
+      <h2 class="text-h3">What we ask of you</h2>
+      <ul class="editorial mt-8 space-y-4 text-charcoal/80">
+        <li class="border-l-2 border-rule-gold pl-5">
+          Responsiveness at review stages. The schedule slips when approvals do.
+        </li>
+        <li class="border-l-2 border-rule-gold pl-5">
+          Willingness to be edited. Not to agree with every note — to engage with them.
+        </li>
+        <li class="border-l-2 border-rule-gold pl-5">
+          Honesty about your deadline, if you have a real one. We can often work to it.
+        </li>
+      </ul>
+
+      <a
+        href="/inquiry"
+        class="label mt-12 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
+      >
+        Start the conversation
+      </a>
+    </div>
+  </section>
+</Base>

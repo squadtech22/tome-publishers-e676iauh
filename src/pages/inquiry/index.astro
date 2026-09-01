@@ -1,0 +1,221 @@
+---
+import Base from '~/layouts/Base.astro';
+import { MANUSCRIPT_STAGES, SERVICES } from '~/lib/inquiry';
+
+const field =
+  'w-full border border-charcoal/20 bg-white px-4 py-3 text-body focus:border-burgundy focus:outline-none';
+const labelCls = 'label block mb-2 text-charcoal/70';
+const errCls = 'mt-2 text-small text-burgundy hidden';
+---
+
+<Base
+  title="Start Your Book"
+  description="Tell us about your manuscript. A member of the TOME editorial team reads every inquiry and replies within two business days."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">Author Inquiry</p>
+      <h1 class="text-ivory max-w-2xl">Start Your Book</h1>
+      <p class="editorial mt-6 max-w-xl text-ivory/75">
+        Tell us where your manuscript stands and what you need. A member of our
+        editorial team reads every inquiry and replies within two business days.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-2xl px-6 py-16">
+    <form id="inquiry-form" method="POST" action="/api/inquiry" novalidate class="space-y-10">
+      <!-- Honeypot: hidden from users, irresistible to bots. -->
+      <div aria-hidden="true" class="absolute left-[-9999px] w-px h-px overflow-hidden">
+        <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+      </div>
+      <input type="hidden" name="elapsed" id="elapsed" value="0" />
+
+      <div
+        id="form-error"
+        role="alert"
+        class="hidden border-l-4 border-burgundy bg-burgundy/5 px-5 py-4 text-burgundy"
+      >
+      </div>
+
+      <div>
+        <label for="name" class={labelCls}>Your name <span class="text-burgundy">*</span></label>
+        <input id="name" name="name" type="text" required autocomplete="name" class={field} />
+        <p class={errCls} data-error-for="name"></p>
+      </div>
+
+      <div>
+        <label for="email" class={labelCls}>Email <span class="text-burgundy">*</span></label>
+        <input id="email" name="email" type="email" required autocomplete="email" class={field} />
+        <p class={errCls} data-error-for="email"></p>
+      </div>
+
+      <div>
+        <label for="workingTitle" class={labelCls}>
+          Working title
+          <span class="normal-case tracking-normal opacity-60">&nbsp;(optional)</span>
+        </label>
+        <input id="workingTitle" name="workingTitle" type="text" class={field} />
+        <p class={errCls} data-error-for="workingTitle"></p>
+      </div>
+
+      <fieldset>
+        <legend class={labelCls}>
+          Where is the manuscript? <span class="text-burgundy">*</span>
+        </legend>
+        <div class="space-y-3">
+          {
+            MANUSCRIPT_STAGES.map((stage, i) => (
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="radio"
+                  name="stage"
+                  value={stage}
+                  required={i === 0}
+                  class="mt-1.5 accent-[#2b0f14]"
+                />
+                <span class="editorial">{stage}</span>
+              </label>
+            ))
+          }
+        </div>
+        <p class={errCls} data-error-for="stage"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend class={labelCls}>What do you need? <span class="text-burgundy">*</span></legend>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {
+            SERVICES.map((service) => (
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="services"
+                  value={service}
+                  class="mt-1.5 accent-[#2b0f14]"
+                />
+                <span class="editorial">{service}</span>
+              </label>
+            ))
+          }
+        </div>
+        <p class={errCls} data-error-for="services"></p>
+      </fieldset>
+
+      <div>
+        <label for="wordCount" class={labelCls}>
+          Approximate word count
+          <span class="normal-case tracking-normal opacity-60">&nbsp;(optional)</span>
+        </label>
+        <input
+          id="wordCount"
+          name="wordCount"
+          type="number"
+          min="1"
+          step="1"
+          inputmode="numeric"
+          class={field + ' metadata max-w-[220px]'}
+        />
+        <p class={errCls} data-error-for="wordCount"></p>
+      </div>
+
+      <div>
+        <label for="message" class={labelCls}>
+          Tell us about the book <span class="text-burgundy">*</span>
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          rows="7"
+          required
+          minlength="20"
+          class={field + ' editorial'}></textarea>
+        <p class="mt-2 text-small text-charcoal/50">
+          The more you tell us, the more useful our first reply will be.
+        </p>
+        <p class={errCls} data-error-for="message"></p>
+      </div>
+
+      <button
+        type="submit"
+        id="submit-btn"
+        class="label bg-burgundy text-ivory px-10 py-4 hover:bg-burgundy/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Send Inquiry
+      </button>
+    </form>
+  </div>
+</Base>
+
+<script>
+  const form = document.getElementById('inquiry-form') as HTMLFormElement | null;
+
+  if (form) {
+    const started = Date.now();
+    const elapsed = document.getElementById('elapsed') as HTMLInputElement;
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const formError = document.getElementById('form-error') as HTMLElement;
+
+    const clearErrors = () => {
+      form.querySelectorAll<HTMLElement>('[data-error-for]').forEach((el) => {
+        el.textContent = '';
+        el.classList.add('hidden');
+      });
+      formError.textContent = '';
+      formError.classList.add('hidden');
+    };
+
+    const showErrors = (errors: Record<string, string>) => {
+      let first: HTMLElement | null = null;
+
+      for (const [key, message] of Object.entries(errors)) {
+        const el = form.querySelector<HTMLElement>('[data-error-for="' + key + '"]');
+        if (el) {
+          el.textContent = message;
+          el.classList.remove('hidden');
+          if (!first) first = el;
+        } else {
+          formError.textContent = message;
+          formError.classList.remove('hidden');
+          if (!first) first = formError;
+        }
+      }
+
+      if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors();
+      elapsed.value = String(Date.now() - started);
+
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = 'Sending...';
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { accept: 'application/json' },
+        });
+
+        const result = await response.json().catch(() => ({ ok: false }));
+
+        if (result.ok) {
+          window.location.href = '/inquiry/thank-you';
+          return;
+        }
+
+        showErrors(result.errors ?? { form: 'Something went wrong. Please try again.' });
+      } catch {
+        showErrors({
+          form: 'We could not reach the server. Please check your connection and try again.',
+        });
+      }
+
+      btn.disabled = false;
+      btn.textContent = original;
+    });
+  }
+</script>

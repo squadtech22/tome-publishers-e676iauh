@@ -1,0 +1,70 @@
+---
+import Base from '~/layouts/Base.astro';
+import PostList from '~/components/PostList.astro';
+import { getPosts, toSlug } from '~/lib/content';
+
+const posts = await getPosts();
+const categories = [...new Set(posts.map((p) => p.data.category))].sort();
+---
+
+<Base
+  title="Journal"
+  description="Essays on craft, publishing, design and marketing from the editorial team at TOME Publishers."
+>
+  <link slot="head" rel="alternate" type="application/rss+xml" title="TOME Publishers Journal" href="/rss.xml" />
+
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">Resources</p>
+      <h1 class="text-ivory">Journal</h1>
+      <p class="editorial mt-6 max-w-xl text-ivory/75">
+        Essays on craft, publishing, design and marketing — written by the people
+        who do the work.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-4xl px-6 py-14">
+    {
+      categories.length > 0 && (
+        <nav aria-label="Filter by category">
+          <ul class="flex flex-wrap gap-3">
+            <li>
+              <a
+                href="/journal"
+                aria-current="page"
+                class="label border border-burgundy bg-burgundy px-4 py-2 text-ivory"
+              >
+                All
+              </a>
+            </li>
+            {categories.map((category) => (
+              <li>
+                <a
+                  href={`/journal/category/${toSlug(category)}`}
+                  class="label border border-rule-gold/50 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors"
+                >
+                  {category}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <div class="mt-6">
+      {
+        posts.length > 0 ? (
+          <PostList posts={posts} />
+        ) : (
+          <p class="editorial py-10 text-charcoal/60">No articles published yet.</p>
+        )
+      }
+    </div>
+
+    <p class="metadata mt-10 text-small text-charcoal/50">
+      Subscribe via <a href="/rss.xml" class="text-burgundy underline underline-offset-4">RSS</a>.
+    </p>
+  </div>
+</Base>

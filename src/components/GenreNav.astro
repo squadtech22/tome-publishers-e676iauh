@@ -1,0 +1,39 @@
+---
+import { toSlug } from '~/lib/content';
+
+interface Props {
+  genres: string[];
+  /** Genre name of the page currently shown, or undefined on "All". */
+  active?: string;
+}
+const { genres, active } = Astro.props;
+
+const linkClass = (isActive: boolean) =>
+  [
+    'label border px-4 py-2 transition-colors',
+    isActive
+      ? 'border-burgundy bg-burgundy text-ivory'
+      : 'border-rule-gold/50 text-charcoal/70 hover:border-burgundy hover:text-burgundy',
+  ].join(' ');
+---
+
+<nav aria-label="Filter by genre">
+  <ul class="flex flex-wrap gap-3">
+    <li>
+      <a href="/books" aria-current={!active ? 'page' : undefined} class={linkClass(!active)}>
+        All Books
+      </a>
+    </li>
+    {genres.map((genre) => (
+      <li>
+        <a
+          href={`/books/genre/${toSlug(genre)}`}
+          aria-current={active === genre ? 'page' : undefined}
+          class={linkClass(active === genre)}
+        >
+          {genre}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

@@ -1,0 +1,91 @@
+---
+import Wordmark from '~/components/Wordmark.astro';
+
+const columns = [
+  {
+    heading: 'Catalog',
+    links: [
+      { href: '/books', label: 'All Books' },
+      { href: '/authors', label: 'Authors' },
+      { href: '/journal', label: 'Journal' },
+      { href: '/rss.xml', label: 'RSS Feed' },
+    ],
+  },
+  {
+    heading: 'Publishing',
+    links: [
+      { href: '/services', label: 'Services' },
+      { href: '/process', label: 'Process' },
+      { href: '/faq', label: 'FAQ' },
+      { href: '/inquiry', label: 'Start Your Book' },
+    ],
+  },
+  {
+    heading: 'TOME',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/contact', label: 'Contact' },
+      { href: 'mailto:hello@tomepublishers.com', label: 'hello@tomepublishers.com' },
+    ],
+  },
+];
+
+const pillars = ['Publishing', 'Design', 'Marketing'];
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-charcoal text-ivory">
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    <div class="grid gap-12 md:grid-cols-[1.2fr_2fr]">
+      <div>
+        <Wordmark tone="dark" class="h-24 w-auto" />
+        <p class="editorial mt-6 max-w-xs text-ivory/70">Every great book begins with an idea.</p>
+      </div>
+
+      <nav aria-label="Footer" class="grid gap-10 sm:grid-cols-3">
+        {
+          columns.map((column) => (
+            <div>
+              <h2 class="label text-rule-gold">{column.heading}</h2>
+              <ul class="mt-5 space-y-3">
+                {column.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      class="editorial text-small text-ivory/70 hover:text-gold transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div
+      class="mt-14 flex flex-col items-center gap-5 border-t border-ivory/10 pt-8 sm:flex-row sm:justify-between"
+    >
+      <ul class="flex flex-wrap items-center gap-x-4 gap-y-2">
+        {
+          pillars.map((pillar, i) => (
+            <>
+              {i > 0 && (
+                <li aria-hidden="true" class="text-rule-gold">
+                  &middot;
+                </li>
+              )}
+              <li class="label text-rule-gold">{pillar}</li>
+            </>
+          ))
+        }
+      </ul>
+
+      <p class="metadata text-small text-ivory/50">
+        &copy; {year} TOME Publishers. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>

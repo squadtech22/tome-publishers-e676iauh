@@ -1,0 +1,54 @@
+---
+/**
+ * TOME Publishers wordmark.
+ *
+ * PLACEHOLDER: the real logo is set in Rockwell Extra Bold, which is a
+ * licensed Monotype face we cannot ship as a webfont. This renders SVG
+ * <text> against the fallback slab stack so layout and spacing are correct.
+ * Replace the <text> elements with exported outline paths from the brand
+ * file before launch — see docs/BRAND.md.
+ */
+interface Props {
+  /** `dark` = gold on burgundy (header/footer). `light` = burgundy on ivory. */
+  tone?: 'dark' | 'light';
+  class?: string;
+  /** Renders the PUBLISHERS lockup and rules beneath the TOME mark. */
+  full?: boolean;
+}
+
+const { tone = 'dark', class: className = '', full = true } = Astro.props;
+
+const markColor = tone === 'dark' ? 'var(--color-gold)' : 'var(--color-burgundy)';
+const ruleColor = tone === 'dark' ? 'var(--color-rule-gold)' : 'var(--color-rule-gold)';
+---
+
+<svg
+  class={className}
+  viewBox="0 0 320 100"
+  role="img"
+  aria-label="TOME Publishers"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <text
+    x="160"
+    y="46"
+    text-anchor="middle"
+    fill={markColor}
+    style="font-family: var(--font-wordmark); font-weight: 900; font-size: 58px; letter-spacing: 0.06em;"
+  >TOME</text>
+
+  {full && (
+    <>
+      <line x1="40" y1="62" x2="142" y2="62" stroke={ruleColor} stroke-width="1.5" />
+      <line x1="178" y1="62" x2="280" y2="62" stroke={ruleColor} stroke-width="1.5" />
+      <path d="M160 57 L165 62 L160 67 L155 62 Z" fill={ruleColor} />
+      <text
+        x="160"
+        y="88"
+        text-anchor="middle"
+        fill={markColor}
+        style="font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: 0.42em;"
+      >PUBLISHERS</text>
+    </>
+  )}
+</svg>

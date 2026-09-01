@@ -1,0 +1,104 @@
+---
+import Base from '~/layouts/Base.astro';
+
+const pillars = [
+  {
+    n: '01',
+    title: 'Publishing',
+    lead: 'The work of turning a manuscript into a book, done properly.',
+    body: 'We take on few titles a year, which means the ones we take get read closely, argued over, and improved. Editorial is not a proofreading pass bolted onto the end — it starts before the draft is finished.',
+    items: [
+      ['Ghostwriting', 'For authors with the story and the expertise but not the six spare months. You keep the byline and the final word.'],
+      ['Editorial development', 'Structural work on argument, pacing and shape, before a single sentence gets polished.'],
+      ['Line editing', 'Sentence-level work on rhythm, clarity and voice — yours, made sharper, not ours imposed.'],
+      ['Copyediting & proofreading', 'Two separate passes by two separate people. Anyone offering it as one pass is offering you one pass.'],
+      ['Printing & production', 'Paper stock, binding, trim size and print runs, specified by people who have opinions about all four.'],
+    ],
+  },
+  {
+    n: '02',
+    title: 'Design',
+    lead: 'A book is a physical object. It should be designed like one.',
+    body: 'Covers get judged in a fraction of a second, usually at thumbnail size, usually beside forty competitors. Interiors get judged over eight hours of reading, mostly unconsciously. Both matter, and they are not the same discipline.',
+    items: [
+      ['Cover design', 'Designed to work at 120 pixels wide first, and at full size second — because that is the order readers meet it in.'],
+      ['Interior typesetting', 'Measure, leading and margins set for sustained reading rather than for fitting a page count.'],
+      ['Illustration & maps', 'Commissioned where the book genuinely needs them, and only there.'],
+      ['Jacket copy', 'The hardest 150 words in the whole project. We write them with you, not for you.'],
+    ],
+  },
+  {
+    n: '03',
+    title: 'Marketing',
+    lead: 'Finding the readers who were always going to love this book.',
+    body: 'Most book marketing fails by trying to reach everyone. We would rather reach the four thousand people for whom this specific book is the best thing they will read this year, and reach them properly.',
+    items: [
+      ['Positioning', 'Deciding what the book is, who it is for, and what it sits beside on a shelf. Everything else follows from this.'],
+      ['Launch strategy', 'A timeline that starts months before publication, because audience readiness is the real constraint.'],
+      ['Publicity & reviews', 'Pitching to outlets and reviewers who cover this kind of book, not to a list of every outlet that exists.'],
+      ['Author platform', 'Building something that outlasts the launch, so the second book starts from higher ground.'],
+    ],
+  },
+];
+---
+
+<Base
+  title="Services"
+  description="Ghostwriting, editorial development, design, printing and marketing — what TOME actually does for authors, in detail."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <p class="label text-rule-gold mb-5">What We Do</p>
+      <h1 class="text-ivory max-w-3xl">Publishing, Design, Marketing</h1>
+      <p class="editorial mt-8 max-w-2xl text-h4 text-ivory/80">
+        Three disciplines, one book. Most authors need all three; almost nobody
+        needs them in equal measure.
+      </p>
+      <p class="mt-6 max-w-xl text-ivory/70">
+        We scope every engagement individually. Below is the full range — the
+        conversation starts with which parts you actually need.
+      </p>
+    </div>
+  </section>
+
+  {
+    pillars.map((pillar, index) => (
+      <section class={index % 2 === 1 ? 'bg-charcoal/[0.03]' : ''}>
+        <div class="mx-auto max-w-5xl px-6 py-20">
+          <div class="flex items-baseline gap-6">
+            <span class="metadata text-h2 leading-none text-rule-gold">{pillar.n}</span>
+            <h2 class="text-h2">{pillar.title}</h2>
+          </div>
+
+          <p class="editorial mt-8 max-w-2xl text-h4 text-burgundy">{pillar.lead}</p>
+          <p class="editorial mt-5 max-w-2xl text-charcoal/75">{pillar.body}</p>
+
+          <dl class="mt-14 grid gap-x-14 gap-y-10 sm:grid-cols-2">
+            {pillar.items.map(([term, detail]) => (
+              <div class="border-t border-rule-gold/40 pt-5">
+                <dt class="label text-burgundy">{term}</dt>
+                <dd class="editorial mt-3 text-charcoal/75">{detail}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-3xl px-6 py-24 text-center">
+      <h2 class="text-ivory text-h2">Not sure which parts you need?</h2>
+      <p class="editorial mt-6 text-ivory/75">
+        Neither are most authors at this stage. Tell us where the manuscript
+        stands and we will tell you honestly what it does and does not require.
+      </p>
+      <a
+        href="/inquiry"
+        class="label mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory transition-colors"
+      >
+        Start Your Book
+      </a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,89 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title: string;
+  author: string;
+  cover?: ImageMetadata;
+  /** Larger, sharper rendering for detail pages. */
+  featured?: boolean;
+  class?: string;
+}
+
+const { title, author, cover, featured = false, class: className = '' } = Astro.props;
+
+/**
+ * Deterministic variation so a shelf of generated covers doesn't look like
+ * one repeated tile. Same title always yields the same treatment.
+ */
+const hash = [...title].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) >>> 0, 7);
+const grounds = ['var(--color-burgundy)', 'var(--color-charcoal)', '#3a1a1f'];
+const ground = grounds[hash % grounds.length];
+const ruleY = 128 + (hash % 3) * 6;
+
+// Wrap long titles across up to 3 lines of ~16 chars.
+const words = title.split(' ');
+const lines: string[] = [];
+let current = '';
+for (const word of words) {
+  if ((current + ' ' + word).trim().length > 16 && current) {
+    lines.push(current.trim());
+    current = word;
+  } else {
+    current = (current + ' ' + word).trim();
+  }
+}
+if (current) lines.push(current);
+const shown = lines.slice(0, 3);
+const startY = 150 - (shown.length - 1) * 15;
+---
+
+{cover ? (
+  <Image
+    src={cover}
+    alt={`Cover of ${title} by ${author}`}
+    widths={featured ? [400, 600, 800] : [200, 300, 400]}
+    sizes={featured ? '(max-width: 768px) 80vw, 400px' : '(max-width: 768px) 45vw, 260px'}
+    class={`w-full h-auto shadow-lg ${className}`}
+  />
+) : (
+  <svg
+    class={`w-full h-auto shadow-lg ${className}`}
+    viewBox="0 0 300 450"
+    role="img"
+    aria-label={`Placeholder cover for ${title} by ${author}`}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="300" height="450" fill={ground} />
+    <rect x="12" y="12" width="276" height="426" fill="none" stroke="var(--color-rule-gold)" stroke-width="1" opacity="0.5" />
+
+    <text
+      x="150" y="62" text-anchor="middle"
+      fill="var(--color-rule-gold)"
+      style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.32em;"
+    >TOME</text>
+
+    {shown.map((line, i) => (
+      <text
+        x="150" y={startY + i * 30} text-anchor="middle"
+        fill="var(--color-gold)"
+        style="font-family: var(--font-display); font-size: 27px; font-weight: 600;"
+      >{line}</text>
+    ))}
+
+    <line x1="110" y1={ruleY + 90} x2="190" y2={ruleY + 90} stroke="var(--color-rule-gold)" stroke-width="1" />
+
+    <text
+      x="150" y={ruleY + 122} text-anchor="middle"
+      fill="var(--color-ivory)" opacity="0.72"
+      style="font-family: var(--font-editorial); font-size: 15px;"
+    >{author}</text>
+
+    <text
+      x="150" y="418" text-anchor="middle"
+      fill="var(--color-rule-gold)" opacity="0.6"
+      style="font-family: var(--font-body); font-size: 9px; font-weight: 600; letter-spacing: 0.22em;"
+    >PUBLISHERS</text>
+  </svg>
+)}

@@ -1,0 +1,139 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import { getPosts, formatDate, toSlug } from '~/lib/content';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPosts();
+
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      // Sorted newest-first, so the next index is the older article.
+      older: posts[index + 1] ?? null,
+      newer: posts[index - 1] ?? null,
+    },
+  }));
+};
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  older: CollectionEntry<'posts'> | null;
+  newer: CollectionEntry<'posts'> | null;
+}
+
+const { post, older, newer } = Astro.props;
+const { title, description, pubDate, updatedDate, category, author } = post.data;
+
+const { Content, headings } = await render(post);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: pubDate.toISOString(),
+  ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
+  author: { '@type': 'Organization', name: author },
+  publisher: { '@type': 'Organization', name: 'TOME Publishers' },
+  articleSection: category,
+};
+---
+
+<Base title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <article>
+    <header class="bg-burgundy text-ivory">
+      <div class="mx-auto max-w-3xl px-6 py-20">
+        <nav aria-label="Breadcrumb" class="label mb-8 text-rule-gold">
+          <a href="/journal" class="hover:text-gold transition-colors">Journal</a>
+          <span aria-hidden="true" class="mx-2 opacity-50">/</span>
+          <a
+            href={`/journal/category/${toSlug(category)}`}
+            class="text-ivory/60 hover:text-gold transition-colors"
+          >
+            {category}
+          </a>
+        </nav>
+
+        <h1 class="text-ivory">{title}</h1>
+
+        <p class="editorial mt-6 text-h4 text-ivory/75">{description}</p>
+
+        <p class="metadata mt-8 text-small text-ivory/50">
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          <span aria-hidden="true" class="mx-2">&middot;</span>
+          {author}
+          {
+            updatedDate && (
+              <>
+                <span aria-hidden="true" class="mx-2">
+                  &middot;
+                </span>
+                <span>Updated {formatDate(updatedDate)}</span>
+              </>
+            )
+          }
+        </p>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-3xl px-6 py-16">
+      {
+        headings.filter((h) => h.depth === 2).length > 1 && (
+          <nav aria-label="On this page" class="mb-14 border-l-2 border-rule-gold pl-6">
+            <p class="label mb-3 text-charcoal/60">On this page</p>
+            <ul class="space-y-2">
+              {headings
+                .filter((h) => h.depth === 2)
+                .map((h) => (
+                  <li>
+                    <a
+                      href={`#${h.slug}`}
+                      class="editorial text-burgundy hover:underline underline-offset-4"
+                    >
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      <div class="prose-tome">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  <nav aria-label="More articles" class="mx-auto max-w-3xl px-6 pb-24">
+    <div class="grid gap-6 border-t border-rule-gold/40 pt-10 sm:grid-cols-2">
+      {
+        newer ? (
+          <a href={`/journal/${newer.id}`} class="group">
+            <p class="label text-charcoal/50">&larr; Newer</p>
+            <p class="editorial mt-2 text-h4 text-burgundy group-hover:opacity-70 transition-opacity">
+              {newer.data.title}
+            </p>
+          </a>
+        ) : (
+          <div />
+        )
+      }
+      {
+        older && (
+          <a href={`/journal/${older.id}`} class="group sm:text-right">
+            <p class="label text-charcoal/50">Older &rarr;</p>
+            <p class="editorial mt-2 text-h4 text-burgundy group-hover:opacity-70 transition-opacity">
+              {older.data.title}
+            </p>
+          </a>
+        )
+      }
+    </div>
+  </nav>
+</Base>

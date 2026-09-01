@@ -1,0 +1,57 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import BookGrid from '~/components/BookGrid.astro';
+import GenreNav from '~/components/GenreNav.astro';
+import { getBooks, toSlug } from '~/lib/content';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const books = await getBooks();
+
+  // Sort once, up front. Calling .sort() inside the .map() below would mutate
+  // the array mid-iteration and silently drop genres from the build.
+  const genres = [...new Set(books.map((b) => b.data.genre))].sort();
+
+  return genres.map((genre) => ({
+    params: { genre: toSlug(genre) },
+    props: {
+      genre,
+      books: books.filter((b) => b.data.genre === genre),
+      allGenres: genres,
+    },
+  }));
+};
+
+interface Props {
+  genre: string;
+  books: CollectionEntry<'books'>[];
+  allGenres: string[];
+}
+
+const { genre, books, allGenres } = Astro.props;
+---
+
+<Base
+  title={genre}
+  description={`${genre} titles published by TOME Publishers.`}
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">
+        <a href="/books" class="hover:text-gold transition-colors">The Catalog</a>
+      </p>
+      <h1 class="text-ivory">{genre}</h1>
+      <p class="editorial mt-6 text-ivory/75">
+        {books.length} {books.length === 1 ? 'title' : 'titles'}
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-6 py-14">
+    <GenreNav genres={allGenres} active={genre} />
+    <div class="mt-14">
+      <BookGrid books={books} />
+    </div>
+  </div>
+</Base>

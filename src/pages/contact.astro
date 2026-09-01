@@ -1,0 +1,52 @@
+---
+import Base from '~/layouts/Base.astro';
+
+const routes = [
+  {
+    label: 'Submitting a manuscript',
+    body: 'Use the author inquiry form. It reaches the editorial team directly and tells us what we need to reply usefully.',
+    action: { href: '/inquiry', text: 'Start Your Book' },
+  },
+  {
+    label: 'Rights, press and general enquiries',
+    body: 'Email us and a person will reply — usually within two business days.',
+    action: { href: 'mailto:hello@tomepublishers.com', text: 'hello@tomepublishers.com' },
+  },
+];
+---
+
+<Base
+  title="Contact"
+  description="How to reach TOME Publishers — author submissions, rights enquiries and press."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">Get in Touch</p>
+      <h1 class="text-ivory">Contact</h1>
+      <p class="editorial mt-6 max-w-xl text-ivory/75">
+        Every message is read by a person. None of them are read by a queue.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-3xl px-6 py-16">
+    <dl class="divide-y divide-charcoal/10">
+      {
+        routes.map((route) => (
+          <div class="py-10 first:pt-0">
+            <dt class="label text-rule-gold">{route.label}</dt>
+            <dd>
+              <p class="editorial mt-4 text-charcoal/80">{route.body}</p>
+              <a
+                href={route.action.href}
+                class="label mt-6 inline-block border border-burgundy px-7 py-3.5 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
+              >
+                {route.action.text}
+              </a>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</Base>

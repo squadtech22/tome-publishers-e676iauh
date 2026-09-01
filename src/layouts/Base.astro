@@ -1,0 +1,81 @@
+---
+import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/cormorant-garamond/700.css';
+import '@fontsource/eb-garamond/400.css';
+import '@fontsource/eb-garamond/400-italic.css';
+import '@fontsource/eb-garamond/500.css';
+import '@fontsource-variable/inter/wght.css';
+import '~/styles/tokens.css';
+
+import Header from '~/components/Header.astro';
+import Footer from '~/components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or root-relative OG image path. */
+  image?: string;
+}
+
+const {
+  title,
+  description = 'From ghostwriting and editorial development to publishing, design, printing and marketing, TOME helps authors bring their books to life.',
+  image = '/og-default.png',
+} = Astro.props;
+
+const pageTitle = title === 'home' ? 'TOME Publishers' : `${title} — TOME Publishers`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#2b0f14" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'TOME Publishers',
+        url: 'https://tomepublishers.com',
+        email: 'hello@tomepublishers.com',
+        description,
+      })}
+    />
+    <slot name="head" />
+
+  </head>
+
+  <body class="min-h-screen flex flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-3 focus:left-3 focus:bg-burgundy focus:text-ivory focus:px-4 focus:py-2"
+    >
+      Skip to content
+    </a>
+
+    <Header />
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

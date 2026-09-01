@@ -1,0 +1,125 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import BookCover from '~/components/BookCover.astro';
+import BookGrid from '~/components/BookGrid.astro';
+import { getBooks, formatDate, toSlug } from '~/lib/content';
+
+export const getStaticPaths = (async () => {
+  const books = await getBooks();
+
+  return books.map((book) => ({
+    params: { slug: book.id },
+    props: {
+      book,
+      related: books
+        .filter((b) => b.id !== book.id && b.data.genre === book.data.genre)
+        .slice(0, 4),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  book: CollectionEntry<'books'>;
+  related: CollectionEntry<'books'>[];
+}
+
+const { book, related } = Astro.props;
+const { title, subtitle, author, genre, pubDate, blurb, cover, isbn, pages, formats } = book.data;
+
+const { Content } = await render(book);
+
+const details = [
+  ['Published', formatDate(pubDate)],
+  ['Genre', genre],
+  isbn ? ['ISBN', isbn] : null,
+  pages ? ['Pages', pages.toLocaleString('en-US')] : null,
+  formats.length ? ['Formats', formats.join(', ')] : null,
+].filter(Boolean) as [string, string][];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: title,
+  author: { '@type': 'Person', name: author },
+  publisher: { '@type': 'Organization', name: 'TOME Publishers' },
+  datePublished: pubDate.toISOString().slice(0, 10),
+  genre,
+  description: blurb,
+  ...(isbn ? { isbn } : {}),
+  ...(pages ? { numberOfPages: pages } : {}),
+};
+---
+
+<Base title={title} description={blurb}>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(jsonLd)}
+  />
+
+  <article>
+    <section class="bg-burgundy text-ivory">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+        <nav aria-label="Breadcrumb" class="label mb-10 text-rule-gold">
+          <a href="/books" class="hover:text-gold transition-colors">Catalog</a>
+          <span aria-hidden="true" class="mx-2 opacity-50">/</span>
+          <span class="text-ivory/60">{genre}</span>
+        </nav>
+
+        <div class="grid gap-14 md:grid-cols-[300px_1fr] md:gap-20">
+          <div class="max-w-[300px]">
+            <BookCover title={title} author={author} cover={cover} featured />
+          </div>
+
+          <div>
+            <h1 class="text-ivory">{title}</h1>
+            {subtitle && (
+              <p class="editorial mt-4 text-h4 italic text-gold/90">{subtitle}</p>
+            )}
+            <p class="editorial mt-6 text-h4 text-ivory/80">
+              by <a
+                href={`/authors/${toSlug(author)}`}
+                class="text-gold underline decoration-rule-gold underline-offset-4 hover:decoration-gold"
+              >{author}</a>
+            </p>
+
+            <p class="editorial mt-10 max-w-xl text-ivory/75">{blurb}</p>
+
+            <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-rule-gold/30 pt-8 sm:grid-cols-3">
+              {details.map(([term, value]) => (
+                <div>
+                  <dt class="label text-rule-gold">{term}</dt>
+                  <dd class="metadata mt-1.5 text-ivory/85">{value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <a
+              href="/inquiry"
+              class="label mt-12 inline-block border border-rule-gold px-8 py-4 text-gold hover:bg-gold hover:text-burgundy transition-colors"
+            >
+              Publish With Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-3xl px-6 py-20">
+      <div class="editorial prose-tome">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  {related.length > 0 && (
+    <section class="mx-auto max-w-6xl px-6 pb-24">
+      <h2 class="text-h3 border-t border-rule-gold/40 pt-14">More in {genre}</h2>
+      <div class="mt-12">
+        <BookGrid books={related} />
+      </div>
+    </section>
+  )}
+</Base>

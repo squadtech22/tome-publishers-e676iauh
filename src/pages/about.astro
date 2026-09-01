@@ -1,0 +1,119 @@
+---
+import Base from '~/layouts/Base.astro';
+import { getBooks, getAuthors } from '~/lib/content';
+
+const [books, authors] = await Promise.all([getBooks(), getAuthors()]);
+
+const stats = [
+  { figure: String(books.length), label: 'Titles in print' },
+  { figure: String(authors.length), label: 'Authors on the list' },
+  { figure: '6', label: 'Books taken on a year' },
+  { figure: '2', label: 'Business days to a reply' },
+];
+
+const values = [
+  {
+    title: 'Few books, properly',
+    body: 'We take on roughly six titles a year. It is a deliberate ceiling. A publisher who says yes to everything cannot give any single book the attention it needs, and most of the industry says yes to everything.',
+  },
+  {
+    title: 'The author keeps the book',
+    body: 'You keep your rights. You keep your files. You keep the final word on every editorial change. We are working on your book, which is a different relationship from owning it.',
+  },
+  {
+    title: 'Honest reads',
+    body: 'If a manuscript is not ready, we say so, and we say why. If we are not the right publisher for it, we say that too. An enthusiastic yes from someone who says yes to everyone is worth nothing.',
+  },
+  {
+    title: 'Craft over speed',
+    body: 'A book that takes fourteen months and lasts twenty years is a better outcome than one that takes eight weeks and is remaindered in eighteen months. We are not the fast option.',
+  },
+];
+---
+
+<Base
+  title="About"
+  description="TOME Publishers takes on few books a year, deliberately. Who we are, what we believe about publishing, and how we work with authors."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <p class="label text-rule-gold mb-5">Who We Are</p>
+      <h1 class="text-ivory max-w-3xl">A small publisher, on purpose</h1>
+      <p class="editorial mt-8 max-w-2xl text-h4 text-ivory/80">
+        Every great book begins with an idea. Most of them die somewhere between
+        the idea and the shelf, and usually not because the idea was bad.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-3xl px-6 py-20">
+    <div class="prose-tome">
+      <p>
+        TOME exists because there is a wide gap between traditional publishing,
+        which takes on almost nothing, and self-publishing, which takes on
+        anything and leaves the author to work out the rest alone.
+      </p>
+      <p>
+        Authors in that gap are not short of ambition. They are short of an
+        editor who will argue with them, a designer who understands that a cover
+        is a sales tool rather than a decoration, and someone to say plainly
+        which parts of the book are not working yet.
+      </p>
+      <p>
+        That is the whole business. We are not trying to be large.
+      </p>
+    </div>
+  </div>
+
+  <section class="bg-charcoal text-ivory">
+    <div class="mx-auto max-w-5xl px-6 py-16">
+      <dl class="grid grid-cols-2 gap-10 text-center sm:grid-cols-4">
+        {
+          stats.map((stat) => (
+            /* column-reverse puts the figure above the label visually while
+               keeping dt-then-dd order in the DOM for assistive tech. */
+            <div class="flex flex-col-reverse gap-3">
+              <dt class="label text-ivory/60">{stat.label}</dt>
+              <dd class="metadata text-h2 leading-none text-gold">{stat.figure}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-5xl px-6 py-20">
+    <h2 class="text-h2">What we believe</h2>
+
+    <div class="mt-14 grid gap-x-14 gap-y-12 sm:grid-cols-2">
+      {
+        values.map((value) => (
+          <article class="border-t border-rule-gold/40 pt-6">
+            <h3 class="text-h4">{value.title}</h3>
+            <p class="editorial mt-4 text-charcoal/75">{value.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-3xl px-6 py-24 text-center">
+      <p class="editorial text-h3 italic text-gold">Your Story Deserves a TOME.</p>
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a
+          href="/inquiry"
+          class="label bg-gold px-8 py-4 text-burgundy hover:bg-ivory transition-colors"
+        >
+          Start Your Book
+        </a>
+        <a
+          href="/process"
+          class="label border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10 transition-colors"
+        >
+          See the Process
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

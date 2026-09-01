@@ -1,0 +1,83 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import PostList from '~/components/PostList.astro';
+import { getPosts, toSlug } from '~/lib/content';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPosts();
+
+  // Sorted once, up front — calling .sort() inside the .map() would mutate
+  // the array mid-iteration and drop categories from the build.
+  const categories = [...new Set(posts.map((p) => p.data.category))].sort();
+
+  return categories.map((category) => ({
+    params: { category: toSlug(category) },
+    props: {
+      category,
+      posts: posts.filter((p) => p.data.category === category),
+      allCategories: categories,
+    },
+  }));
+};
+
+interface Props {
+  category: string;
+  posts: CollectionEntry<'posts'>[];
+  allCategories: string[];
+}
+
+const { category, posts, allCategories } = Astro.props;
+---
+
+<Base title={category} description={`${category} articles from TOME Publishers.`}>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">
+        <a href="/journal" class="hover:text-gold transition-colors">Journal</a>
+      </p>
+      <h1 class="text-ivory">{category}</h1>
+      <p class="editorial mt-6 text-ivory/75">
+        {posts.length}
+        {posts.length === 1 ? 'article' : 'articles'}
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-4xl px-6 py-14">
+    <nav aria-label="Filter by category">
+      <ul class="flex flex-wrap gap-3">
+        <li>
+          <a
+            href="/journal"
+            class="label border border-rule-gold/50 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors"
+          >
+            All
+          </a>
+        </li>
+        {
+          allCategories.map((name) => (
+            <li>
+              <a
+                href={`/journal/category/${toSlug(name)}`}
+                aria-current={name === category ? 'page' : undefined}
+                class={
+                  name === category
+                    ? 'label border border-burgundy bg-burgundy px-4 py-2 text-ivory'
+                    : 'label border border-rule-gold/50 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors'
+                }
+              >
+                {name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mt-6">
+      <PostList posts={posts} />
+    </div>
+  </div>
+</Base>

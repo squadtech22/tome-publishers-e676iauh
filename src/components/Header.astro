@@ -1,0 +1,84 @@
+---
+import Wordmark from '~/components/Wordmark.astro';
+
+const nav = [
+  { href: '/books', label: 'Books' },
+  { href: '/authors', label: 'Authors' },
+  { href: '/services', label: 'Services' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/about', label: 'About' },
+];
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="bg-burgundy text-ivory">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="flex items-center justify-between gap-8 py-5">
+      <a href="/" aria-label="TOME Publishers — home" class="shrink-0">
+        <Wordmark tone="dark" full={false} class="h-9 w-auto" />
+      </a>
+
+      <nav aria-label="Primary" class="hidden lg:block">
+        <ul class="flex items-center gap-7">
+          {
+            nav.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  aria-current={isCurrent(href) ? 'page' : undefined}
+                  class="label text-ivory/85 hover:text-gold aria-[current=page]:text-gold transition-colors"
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a
+              href="/inquiry"
+              class="label inline-block border border-rule-gold px-5 py-2.5 text-gold hover:bg-gold hover:text-burgundy transition-colors"
+            >
+              Start Your Book
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <details class="lg:hidden relative">
+        <summary
+          class="label list-none cursor-pointer py-2 text-gold [&::-webkit-details-marker]:hidden"
+        >
+          Menu
+        </summary>
+        <nav
+          aria-label="Primary"
+          class="absolute right-0 top-full z-40 mt-2 w-60 border border-rule-gold/40 bg-burgundy p-5 shadow-xl"
+        >
+          <ul class="flex flex-col gap-4">
+            {
+              nav.map(({ href, label }) => (
+                <li>
+                  <a
+                    href={href}
+                    aria-current={isCurrent(href) ? 'page' : undefined}
+                    class="label text-ivory/85 hover:text-gold aria-[current=page]:text-gold"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a href="/contact" class="label text-ivory/85 hover:text-gold">Contact</a>
+            </li>
+            <li class="border-t border-rule-gold/30 pt-4">
+              <a href="/inquiry" class="label text-gold">Start Your Book</a>
+            </li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,259 @@
+---
+import Base from '~/layouts/Base.astro';
+import BookGrid from '~/components/BookGrid.astro';
+import { getBooks, getPosts, getAuthors, formatDate } from '~/lib/content';
+
+const [books, posts, authors] = await Promise.all([getBooks(), getPosts(), getAuthors()]);
+
+// Fall back to the most recent titles if nothing is flagged as featured.
+const featuredBooks = books.filter((b) => b.data.featured);
+const shelf = (featuredBooks.length > 0 ? featuredBooks : books).slice(0, 4);
+const latestPosts = posts.slice(0, 3);
+
+const pillars = [
+  {
+    n: '01',
+    title: 'Publishing',
+    body: 'Ghostwriting, editorial development, and a route to print that treats your manuscript as literature rather than inventory.',
+  },
+  {
+    n: '02',
+    title: 'Design',
+    body: 'Covers, interiors, and typesetting drawn with the same care as the words they carry.',
+  },
+  {
+    n: '03',
+    title: 'Marketing',
+    body: 'Positioning and campaigns that put finished books in front of the readers most likely to love them.',
+  },
+];
+
+const stats = [
+  { figure: String(books.length), label: 'Titles in print' },
+  { figure: String(authors.length), label: 'Authors on the list' },
+  { figure: '6', label: 'Books taken a year' },
+  { figure: '2', label: 'Days to a reply' },
+];
+
+const processPreview = [
+  ['01', 'The reading', 'An editor reads your manuscript properly and writes back honestly. No charge, no obligation.'],
+  ['02', 'The plan', 'We scope exactly what the book needs, in writing, before anything begins.'],
+  ['03', 'The work', 'Editorial, design and launch — with your approval at every stage.'],
+];
+
+const testimonials = [
+  {
+    quote:
+      'They told me the middle third was not working, and then spent four months helping me fix it. Nobody else had been willing to say the first part.',
+    name: 'Margery Ash',
+    book: 'What the Orchard Knew',
+  },
+  {
+    quote:
+      'I came in expecting a production service and got an argument about my own book instead. It is a much better book for it.',
+    name: 'Daniel Vaszquez',
+    book: 'The Quiet Ledger',
+  },
+];
+---
+
+<Base title="home">
+  <!-- Hero -->
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-24 md:py-36">
+      <p class="label text-rule-gold mb-6">Publishing &middot; Design &middot; Marketing</p>
+
+      <h1 class="text-ivory max-w-3xl">
+        Your Story Deserves a <span class="text-gold">TOME</span>.
+      </h1>
+
+      <p class="editorial mt-8 max-w-xl text-h4 italic text-gold/90">
+        Every great book begins with an idea.
+      </p>
+
+      <p class="mt-6 max-w-xl text-ivory/75">
+        From ghostwriting and editorial development to publishing, design, printing
+        and marketing, TOME helps authors bring their books to life.
+      </p>
+
+      <div class="mt-12 flex flex-wrap gap-4">
+        <a
+          href="/inquiry"
+          class="label bg-gold px-8 py-4 text-burgundy hover:bg-ivory transition-colors"
+        >
+          Start Your Book
+        </a>
+        <a
+          href="/books"
+          class="label border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10 transition-colors"
+        >
+          Browse the Catalog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-charcoal text-ivory">
+    <div class="mx-auto max-w-5xl px-6 py-14">
+      <dl class="grid grid-cols-2 gap-10 text-center sm:grid-cols-4">
+        {
+          stats.map((stat) => (
+            /* column-reverse puts the figure above the label visually while
+               keeping dt-then-dd order in the DOM for assistive tech. */
+            <div class="flex flex-col-reverse gap-3">
+              <dt class="label text-ivory/60">{stat.label}</dt>
+              <dd class="metadata text-h2 leading-none text-gold">{stat.figure}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Pillars -->
+  <section class="mx-auto max-w-6xl px-6 py-24">
+    <div class="grid gap-12 md:grid-cols-3">
+      {
+        pillars.map(({ n, title, body }) => (
+          <article>
+            <p class="metadata text-h2 leading-none text-rule-gold">{n}</p>
+            <div class="mt-4 h-px w-12 bg-rule-gold" />
+            <h2 class="mt-6 text-h3">{title}</h2>
+            <p class="editorial mt-4 text-charcoal/80">{body}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <a
+      href="/services"
+      class="label mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
+    >
+      All Services
+    </a>
+  </section>
+
+  <!-- Featured books -->
+  {
+    shelf.length > 0 && (
+      <section class="bg-charcoal/[0.03]">
+        <div class="mx-auto max-w-6xl px-6 py-24">
+          <div class="flex flex-wrap items-baseline justify-between gap-4">
+            <h2 class="text-h2">From the catalog</h2>
+            <a href="/books" class="label text-burgundy hover:opacity-70 transition-opacity">
+              All books &rarr;
+            </a>
+          </div>
+
+          <div class="mt-14">
+            <BookGrid books={shelf} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Process preview -->
+  <section class="mx-auto max-w-6xl px-6 py-24">
+    <h2 class="text-h2">How it works</h2>
+    <p class="editorial mt-5 max-w-xl text-charcoal/75">
+      Six stages, nine to fourteen months. Here are the first three.
+    </p>
+
+    <ol class="mt-14 grid gap-12 md:grid-cols-3">
+      {
+        processPreview.map(([n, title, body]) => (
+          <li>
+            <p class="metadata text-label uppercase tracking-widest text-rule-gold">{n}</p>
+            <h3 class="mt-3 text-h4">{title}</h3>
+            <p class="editorial mt-3 text-charcoal/75">{body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <a
+      href="/process"
+      class="label mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
+    >
+      The Full Process
+    </a>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <div class="grid gap-14 md:grid-cols-2">
+        {
+          testimonials.map((testimonial) => (
+            <figure>
+              <blockquote class="editorial text-h4 italic text-ivory/90 border-l-2 border-rule-gold pl-6">
+                {testimonial.quote}
+              </blockquote>
+              <figcaption class="mt-6 pl-6">
+                <span class="label block text-gold">{testimonial.name}</span>
+                <span class="editorial mt-1 block text-small text-ivory/55">
+                  {testimonial.book}
+                </span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest journal -->
+  {
+    latestPosts.length > 0 && (
+      <section class="mx-auto max-w-6xl px-6 py-24">
+        <div class="flex flex-wrap items-baseline justify-between gap-4">
+          <h2 class="text-h2">From the Journal</h2>
+          <a href="/journal" class="label text-burgundy hover:opacity-70 transition-opacity">
+            All articles &rarr;
+          </a>
+        </div>
+
+        <ul class="mt-14 grid gap-12 md:grid-cols-3">
+          {latestPosts.map((post) => (
+            <li>
+              <a href={`/journal/${post.id}`} class="group block">
+                <p class="metadata text-label uppercase tracking-wider text-charcoal/50">
+                  <span class="text-rule-gold">{post.data.category}</span>
+                  <span aria-hidden="true" class="mx-2 opacity-40">
+                    /
+                  </span>
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {formatDate(post.data.pubDate)}
+                  </time>
+                </p>
+                <h3 class="mt-3 text-h4 group-hover:text-burgundy/70 transition-colors">
+                  {post.data.title}
+                </h3>
+                <p class="editorial mt-3 text-charcoal/75">{post.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- Closing CTA -->
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-3xl px-6 py-28 text-center">
+      <h2 class="text-ivory text-h2">Tell us about your book.</h2>
+      <p class="editorial mt-6 text-ivory/75">
+        An editor reads every inquiry — properly, not as a queue — and replies
+        within two business days. There is no charge and no obligation.
+      </p>
+      <a
+        href="/inquiry"
+        class="label mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory transition-colors"
+      >
+        Start Your Book
+      </a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,36 @@
+---
+import Base from '~/layouts/Base.astro';
+import BookGrid from '~/components/BookGrid.astro';
+import GenreNav from '~/components/GenreNav.astro';
+import { getBooks } from '~/lib/content';
+
+const books = await getBooks();
+const genres = [...new Set(books.map((b) => b.data.genre))].sort();
+---
+
+<Base
+  title="Books"
+  description="The TOME Publishers catalogue — literary fiction, poetry, memoir, mystery and non-fiction from authors we are proud to publish."
+>
+  <section class="bg-burgundy text-ivory">
+    <div class="mx-auto max-w-6xl px-6 py-20">
+      <p class="label text-rule-gold mb-5">The Catalog</p>
+      <h1 class="text-ivory">Books</h1>
+      <p class="editorial mt-6 max-w-xl text-ivory/75">
+        {books.length} {books.length === 1 ? 'title' : 'titles'} in print, across {genres.length} {genres.length === 1 ? 'genre' : 'genres'}.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-6 py-14">
+    <GenreNav genres={genres} />
+
+    <div class="mt-14">
+      {books.length > 0 ? (
+        <BookGrid books={books} />
+      ) : (
+        <p class="editorial text-charcoal/60">No titles published yet.</p>
+      )}
+    </div>
+  </div>
+</Base>
