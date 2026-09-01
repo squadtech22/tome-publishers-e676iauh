@@ -87,7 +87,7 @@ const jsonLd = {
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-  <section class="bg-burgundy text-ivory">
+  <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-6xl px-6 py-20">
       <p class="label text-rule-gold mb-5">Questions</p>
       <h1 class="text-ivory">Frequently asked</h1>
@@ -100,7 +100,7 @@ const jsonLd = {
   <div class="mx-auto max-w-3xl px-6 py-16">
     {
       groups.map((group) => (
-        <section class="mb-16 last:mb-0">
+        <section class="reveal mb-16 last:mb-0">
           <h2 class="label border-b border-rule-gold pb-3 text-burgundy">{group.heading}</h2>
 
           <div class="mt-2">

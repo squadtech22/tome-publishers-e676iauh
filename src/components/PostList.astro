@@ -10,8 +10,8 @@ const { posts } = Astro.props;
 
 <ul class="divide-y divide-charcoal/10">
   {
-    posts.map((post) => (
-      <li>
+    posts.map((post, i) => (
+      <li class="reveal" style={`--reveal-delay:${Math.min(i, 3)}`}>
         <a href={`/journal/${post.id}`} class="group block py-10">
           <p class="metadata text-label uppercase tracking-wider text-charcoal/50">
             <span class="text-rule-gold">{post.data.category}</span>
@@ -30,8 +30,8 @@ const { posts } = Astro.props;
           <p class="editorial mt-3 max-w-2xl text-charcoal/75">{post.data.description}</p>
 
           <p class="label mt-5 text-burgundy">
-            Read
-            <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">
+            <span class="link-sweep">Read</span>
+            <span aria-hidden="true" class="nudge ml-1">
               &rarr;
             </span>
           </p>

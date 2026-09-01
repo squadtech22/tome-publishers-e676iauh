@@ -46,7 +46,7 @@ const pillars = [
   title="Services"
   description="Ghostwriting, editorial development, design, printing and marketing — what TOME actually does for authors, in detail."
 >
-  <section class="bg-burgundy text-ivory">
+  <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-6xl px-6 py-24">
       <p class="label text-rule-gold mb-5">What We Do</p>
       <h1 class="text-ivory max-w-3xl">Publishing, Design, Marketing</h1>
@@ -65,17 +65,19 @@ const pillars = [
     pillars.map((pillar, index) => (
       <section class={index % 2 === 1 ? 'bg-charcoal/[0.03]' : ''}>
         <div class="mx-auto max-w-5xl px-6 py-20">
-          <div class="flex items-baseline gap-6">
+          <div class="reveal flex items-baseline gap-6">
             <span class="metadata text-h2 leading-none text-rule-gold">{pillar.n}</span>
             <h2 class="text-h2">{pillar.title}</h2>
           </div>
 
-          <p class="editorial mt-8 max-w-2xl text-h4 text-burgundy">{pillar.lead}</p>
-          <p class="editorial mt-5 max-w-2xl text-charcoal/75">{pillar.body}</p>
+          <div class="reveal">
+            <p class="editorial mt-8 max-w-2xl text-h4 text-burgundy">{pillar.lead}</p>
+            <p class="editorial mt-5 max-w-2xl text-charcoal/75">{pillar.body}</p>
+          </div>
 
           <dl class="mt-14 grid gap-x-14 gap-y-10 sm:grid-cols-2">
-            {pillar.items.map(([term, detail]) => (
-              <div class="border-t border-rule-gold/40 pt-5">
+            {pillar.items.map(([term, detail], j) => (
+              <div class="reveal border-t border-rule-gold/40 pt-5" style={`--reveal-delay:${j % 2}`}>
                 <dt class="label text-burgundy">{term}</dt>
                 <dd class="editorial mt-3 text-charcoal/75">{detail}</dd>
               </div>
@@ -86,8 +88,8 @@ const pillars = [
     ))
   }
 
-  <section class="bg-burgundy text-ivory">
-    <div class="mx-auto max-w-3xl px-6 py-24 text-center">
+  <section class="grained bg-burgundy text-ivory">
+    <div class="reveal mx-auto max-w-3xl px-6 py-24 text-center">
       <h2 class="text-ivory text-h2">Not sure which parts you need?</h2>
       <p class="editorial mt-6 text-ivory/75">
         Neither are most authors at this stage. Tell us where the manuscript

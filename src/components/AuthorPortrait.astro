@@ -1,0 +1,83 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * A real portrait when one exists, otherwise a generated monogram medallion.
+ * Keeps author pages looking deliberate before any photography is supplied,
+ * and swaps to the photo automatically once `portrait` is set in frontmatter.
+ */
+interface Props {
+  name: string;
+  portrait?: ImageMetadata;
+  class?: string;
+}
+
+const { name, portrait, class: className = '' } = Astro.props;
+
+const initials = name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => [...part][0]?.toUpperCase() ?? '')
+  .join('');
+
+// Deterministic ground so each author's medallion is stable but not uniform.
+const hash = [...name].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) >>> 0, 11);
+const grounds = ['var(--color-burgundy)', 'var(--color-charcoal)', '#3a1a1f'];
+const ground = grounds[hash % grounds.length];
+const rotation = (hash % 3) - 1;
+---
+
+{
+  portrait ? (
+    <Image
+      src={portrait}
+      alt={`Portrait of ${name}`}
+      widths={[160, 240, 320]}
+      sizes="(max-width: 640px) 120px, 160px"
+      class={`aspect-square w-full object-cover ${className}`}
+    />
+  ) : (
+    <svg
+      class={className}
+      viewBox="0 0 160 160"
+      role="img"
+      aria-label={`${name} — monogram`}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="160" height="160" fill={ground} />
+      <g transform={`rotate(${rotation} 80 80)`}>
+        <circle
+          cx="80"
+          cy="80"
+          r="58"
+          fill="none"
+          stroke="var(--color-rule-gold)"
+          stroke-width="1"
+          opacity="0.55"
+        />
+        <circle
+          cx="80"
+          cy="80"
+          r="50"
+          fill="none"
+          stroke="var(--color-rule-gold)"
+          stroke-width="0.5"
+          opacity="0.4"
+        />
+        <text
+          x="80"
+          y="80"
+          text-anchor="middle"
+          dominant-baseline="central"
+          fill="var(--color-gold)"
+          style="font-family: var(--font-display); font-size: 42px; font-weight: 600; letter-spacing: 0.06em;"
+        >
+          {initials}
+        </text>
+        <path d="M80 128 L85 133 L80 138 L75 133 Z" fill="var(--color-rule-gold)" opacity="0.7" />
+      </g>
+    </svg>
+  )
+}

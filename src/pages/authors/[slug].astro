@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import Base from '~/layouts/Base.astro';
 import BookGrid from '~/components/BookGrid.astro';
+import AuthorPortrait from '~/components/AuthorPortrait.astro';
 import { getAuthors, type AuthorSummary } from '~/lib/content';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -36,23 +37,37 @@ const jsonLd = {
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-  <section class="bg-burgundy text-ivory">
-    <div class="mx-auto max-w-3xl px-6 py-20">
-      <nav aria-label="Breadcrumb" class="label mb-8 text-rule-gold">
-        <a href="/authors" class="hover:text-gold transition-colors">Authors</a>
+  <section class="grained bg-burgundy text-ivory">
+    <div class="mx-auto max-w-4xl px-6 py-20">
+      <nav aria-label="Breadcrumb" class="label mb-10 text-rule-gold">
+        <a href="/authors" class="link-sweep hover:text-gold">Authors</a>
       </nav>
 
-      <h1 class="text-ivory">{author.name}</h1>
+      <div class="reveal flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
+        <AuthorPortrait
+          name={author.name}
+          portrait={profile?.data.portrait}
+          class="w-32 shrink-0 border border-rule-gold/30 sm:w-40"
+        />
 
-      {
-        (profile?.data.role || profile?.data.location) && (
-          <p class="metadata mt-4 text-label uppercase tracking-wider text-rule-gold">
-            {[profile?.data.role, profile?.data.location].filter(Boolean).join(' · ')}
-          </p>
-        )
-      }
+        <div>
+          <h1 class="text-ivory">{author.name}</h1>
 
-      {profile?.data.bio && <p class="editorial mt-8 text-h4 text-ivory/80">{profile.data.bio}</p>}
+          {
+            (profile?.data.role || profile?.data.location) && (
+              <p class="metadata mt-4 text-label uppercase tracking-wider text-rule-gold">
+                {[profile?.data.role, profile?.data.location].filter(Boolean).join(' · ')}
+              </p>
+            )
+          }
+
+          {
+            profile?.data.bio && (
+              <p class="editorial mt-6 text-h4 text-ivory/80">{profile.data.bio}</p>
+            )
+          }
+        </div>
+      </div>
     </div>
   </section>
 

@@ -1,6 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import BookGrid from '~/components/BookGrid.astro';
+import Ornament from '~/components/Ornament.astro';
+import heroSpines from '~/assets/generated/hero-spines.png';
 import { getBooks, getPosts, getAuthors, formatDate } from '~/lib/content';
 
 const [books, posts, authors] = await Promise.all([getBooks(), getPosts(), getAuthors()]);
@@ -59,51 +62,71 @@ const testimonials = [
 
 <Base title="home">
   <!-- Hero -->
-  <section class="bg-burgundy text-ivory">
-    <div class="mx-auto max-w-6xl px-6 py-24 md:py-36">
-      <p class="label text-rule-gold mb-6">Publishing &middot; Design &middot; Marketing</p>
+  <section class="grained relative overflow-hidden bg-burgundy text-ivory">
+    <div class="mx-auto grid max-w-6xl gap-16 px-6 py-24 md:py-32 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <div class="reveal">
+        <p class="label text-rule-gold">Publishing &middot; Design &middot; Marketing</p>
+        <Ornament tone="dark" class="mt-5 !w-[120px] !justify-start" />
 
-      <h1 class="text-ivory max-w-3xl">
-        Your Story Deserves a <span class="text-gold">TOME</span>.
-      </h1>
+        <h1 class="mt-8 text-ivory">
+          Your Story Deserves a <span class="text-gold">TOME</span>.
+        </h1>
 
-      <p class="editorial mt-8 max-w-xl text-h4 italic text-gold/90">
-        Every great book begins with an idea.
-      </p>
+        <p class="editorial mt-8 max-w-xl text-h4 italic text-gold/90">
+          Every great book begins with an idea.
+        </p>
 
-      <p class="mt-6 max-w-xl text-ivory/75">
-        From ghostwriting and editorial development to publishing, design, printing
-        and marketing, TOME helps authors bring their books to life.
-      </p>
+        <p class="mt-6 max-w-xl text-ivory/75">
+          From ghostwriting and editorial development to publishing, design, printing
+          and marketing, TOME helps authors bring their books to life.
+        </p>
 
-      <div class="mt-12 flex flex-wrap gap-4">
-        <a
-          href="/inquiry"
-          class="label bg-gold px-8 py-4 text-burgundy hover:bg-ivory transition-colors"
-        >
-          Start Your Book
-        </a>
-        <a
-          href="/books"
-          class="label border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10 transition-colors"
-        >
-          Browse the Catalog
-        </a>
+        <div class="mt-12 flex flex-wrap gap-4">
+          <a
+            href="/inquiry"
+            class="label lift bg-gold px-8 py-4 text-burgundy hover:bg-ivory"
+          >
+            Start Your Book
+          </a>
+          <a
+            href="/books"
+            class="label lift border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10"
+          >
+            Browse the Catalog
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal hidden lg:block" style="--reveal-delay:2">
+        <div class="relative">
+          <Image
+            src={heroSpines}
+            alt="A shelf of clothbound books in burgundy and charcoal, tooled with gold bands"
+            widths={[440, 660, 900]}
+            sizes="(max-width: 1024px) 0px, 440px"
+            class="w-full shadow-[0_30px_60px_-25px_rgb(0_0_0/0.7)]"
+            loading="eager"
+          />
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 border border-rule-gold/30"
+          ></span>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Stats -->
-  <section class="bg-gold text-ivory">
-    <div class="mx-auto max-w-5xl px-6 py-14">
+  <section class="grained bg-charcoal text-ivory">
+    <div class="mx-auto max-w-5xl px-6 py-16">
       <dl class="grid grid-cols-2 gap-10 text-center sm:grid-cols-4">
         {
-          stats.map((stat) => (
+          stats.map((stat, i) => (
             /* column-reverse puts the figure above the label visually while
                keeping dt-then-dd order in the DOM for assistive tech. */
-            <div class="flex flex-col-reverse gap-3">
-              <dt class="label text-burgundy">{stat.label}</dt>
-              <dd class="metadata text-h2 leading-none text-burgundy">{stat.figure}</dd>
+            <div class="reveal flex flex-col-reverse gap-3" style={`--reveal-delay:${i}`}>
+              <dt class="label text-ivory/60">{stat.label}</dt>
+              <dd class="metadata text-h2 leading-none text-gold">{stat.figure}</dd>
             </div>
           ))
         }
@@ -115,8 +138,8 @@ const testimonials = [
   <section class="mx-auto max-w-6xl px-6 py-24">
     <div class="grid gap-12 md:grid-cols-3">
       {
-        pillars.map(({ n, title, body }) => (
-          <article>
+        pillars.map(({ n, title, body }, i) => (
+          <article class="reveal" style={`--reveal-delay:${i}`}>
             <p class="metadata text-h2 leading-none text-rule-gold">{n}</p>
             <div class="mt-4 h-px w-12 bg-rule-gold" />
             <h2 class="mt-6 text-h3">{title}</h2>
@@ -126,12 +149,14 @@ const testimonials = [
       }
     </div>
 
-    <a
-      href="/services"
-      class="label mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
-    >
-      All Services
-    </a>
+    <div class="reveal">
+      <a
+        href="/services"
+        class="label lift mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
+      >
+        All Services
+      </a>
+    </div>
   </section>
 
   <!-- Featured books -->
@@ -139,10 +164,13 @@ const testimonials = [
     shelf.length > 0 && (
       <section class="bg-charcoal/[0.03]">
         <div class="mx-auto max-w-6xl px-6 py-24">
-          <div class="flex flex-wrap items-baseline justify-between gap-4">
+          <div class="reveal flex flex-wrap items-baseline justify-between gap-4">
             <h2 class="text-h2">From the catalog</h2>
-            <a href="/books" class="label text-burgundy hover:opacity-70 transition-opacity">
-              All books &rarr;
+            <a href="/books" class="label group text-burgundy">
+              <span class="link-sweep">All books</span>
+              <span class="nudge ml-1" aria-hidden="true">
+                &rarr;
+              </span>
             </a>
           </div>
 
@@ -156,15 +184,17 @@ const testimonials = [
 
   <!-- Process preview -->
   <section class="mx-auto max-w-6xl px-6 py-24">
-    <h2 class="text-h2">How it works</h2>
-    <p class="editorial mt-5 max-w-xl text-charcoal/75">
-      Six stages, nine to fourteen months. Here are the first three.
-    </p>
+    <div class="reveal">
+      <h2 class="text-h2">How it works</h2>
+      <p class="editorial mt-5 max-w-xl text-charcoal/75">
+        Six stages, nine to fourteen months. Here are the first three.
+      </p>
+    </div>
 
     <ol class="mt-14 grid gap-12 md:grid-cols-3">
       {
-        processPreview.map(([n, title, body]) => (
-          <li>
+        processPreview.map(([n, title, body], i) => (
+          <li class="reveal" style={`--reveal-delay:${i}`}>
             <p class="metadata text-label uppercase tracking-widest text-rule-gold">{n}</p>
             <h3 class="mt-3 text-h4">{title}</h3>
             <p class="editorial mt-3 text-charcoal/75">{body}</p>
@@ -173,22 +203,26 @@ const testimonials = [
       }
     </ol>
 
-    <a
-      href="/process"
-      class="label mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors"
-    >
-      The Full Process
-    </a>
+    <div class="reveal">
+      <a
+        href="/process"
+        class="label lift mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
+      >
+        The Full Process
+      </a>
+    </div>
   </section>
 
   <!-- Testimonials -->
-  <section class="bg-burgundy text-ivory">
+  <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-6xl px-6 py-24">
-      <div class="grid gap-14 md:grid-cols-2">
+      <Ornament tone="dark" class="reveal mx-auto" />
+
+      <div class="mt-16 grid gap-14 md:grid-cols-2">
         {
-          testimonials.map((testimonial) => (
-            <figure>
-              <blockquote class="editorial text-h4 italic text-ivory/90 border-l-2 border-rule-gold pl-6">
+          testimonials.map((testimonial, i) => (
+            <figure class="reveal" style={`--reveal-delay:${i}`}>
+              <blockquote class="editorial border-l-2 border-rule-gold pl-6 text-h4 italic text-ivory/90">
                 {testimonial.quote}
               </blockquote>
               <figcaption class="mt-6 pl-6">
@@ -208,16 +242,19 @@ const testimonials = [
   {
     latestPosts.length > 0 && (
       <section class="mx-auto max-w-6xl px-6 py-24">
-        <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <div class="reveal flex flex-wrap items-baseline justify-between gap-4">
           <h2 class="text-h2">From the Journal</h2>
-          <a href="/journal" class="label text-burgundy hover:opacity-70 transition-opacity">
-            All articles &rarr;
+          <a href="/journal" class="label group text-burgundy">
+            <span class="link-sweep">All articles</span>
+            <span class="nudge ml-1" aria-hidden="true">
+              &rarr;
+            </span>
           </a>
         </div>
 
         <ul class="mt-14 grid gap-12 md:grid-cols-3">
-          {latestPosts.map((post) => (
-            <li>
+          {latestPosts.map((post, i) => (
+            <li class="reveal" style={`--reveal-delay:${i}`}>
               <a href={`/journal/${post.id}`} class="group block">
                 <p class="metadata text-label uppercase tracking-wider text-charcoal/50">
                   <span class="text-rule-gold">{post.data.category}</span>
@@ -228,7 +265,7 @@ const testimonials = [
                     {formatDate(post.data.pubDate)}
                   </time>
                 </p>
-                <h3 class="mt-3 text-h4 group-hover:text-burgundy/70 transition-colors">
+                <h3 class="mt-3 text-h4 transition-colors group-hover:text-burgundy/70">
                   {post.data.title}
                 </h3>
                 <p class="editorial mt-3 text-charcoal/75">{post.data.description}</p>
@@ -241,19 +278,22 @@ const testimonials = [
   }
 
   <!-- Closing CTA -->
-  <section class="bg-burgundy text-ivory">
+  <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-3xl px-6 py-28 text-center">
-      <h2 class="text-ivory text-h2">Tell us about your book.</h2>
-      <p class="editorial mt-6 text-ivory/75">
-        An editor reads every inquiry — properly, not as a queue — and replies
-        within two business days. There is no charge and no obligation.
-      </p>
-      <a
-        href="/inquiry"
-        class="label mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory transition-colors"
-      >
-        Start Your Book
-      </a>
+      <div class="reveal">
+        <h2 class="text-h2 text-ivory">Tell us about your book.</h2>
+        <Ornament tone="dark" class="mx-auto mt-8" />
+        <p class="editorial mt-8 text-ivory/75">
+          An editor reads every inquiry — properly, not as a queue — and replies
+          within two business days. There is no charge and no obligation.
+        </p>
+        <a
+          href="/inquiry"
+          class="label lift mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory"
+        >
+          Start Your Book
+        </a>
+      </div>
     </div>
   </section>
 </Base>

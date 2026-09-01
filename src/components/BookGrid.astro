@@ -10,25 +10,26 @@ const { books } = Astro.props;
 ---
 
 <ul class="grid grid-cols-2 gap-x-8 gap-y-14 md:grid-cols-3 lg:grid-cols-4">
-  {books.map((book) => (
-    <li>
-      <a href={`/books/${book.id}`} class="group block">
-        <div class="overflow-hidden">
+  {
+    books.map((book, i) => (
+      <li class="reveal" style={`--reveal-delay:${i % 4}`}>
+        <a href={`/books/${book.id}`} class="group block">
           <BookCover
             title={book.data.title}
             author={book.data.author}
             cover={book.data.cover}
-            class="transition-transform duration-500 group-hover:scale-[1.03]"
+            class="cover-hover"
           />
-        </div>
-        <h3 class="mt-5 text-h4 group-hover:text-burgundy/70 transition-colors">
-          {book.data.title}
-        </h3>
-        <p class="editorial mt-1 text-charcoal/70">{book.data.author}</p>
-        <p class="metadata mt-2 text-label text-charcoal/50 uppercase tracking-wider">
-          {book.data.genre} &middot; {formatYear(book.data.pubDate)}
-        </p>
-      </a>
-    </li>
-  ))}
+
+          <h3 class="mt-6 text-h4 transition-colors group-hover:text-burgundy/70">
+            {book.data.title}
+          </h3>
+          <p class="editorial mt-1 text-charcoal/70">{book.data.author}</p>
+          <p class="metadata mt-2 text-label uppercase tracking-wider text-charcoal/50">
+            {book.data.genre} &middot; {formatYear(book.data.pubDate)}
+          </p>
+        </a>
+      </li>
+    ))
+  }
 </ul>

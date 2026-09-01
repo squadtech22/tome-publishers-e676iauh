@@ -69,6 +69,15 @@ nslookup -type=MX tomepublishers.com
 | `npm run check` | Type + template diagnostics. **`astro build` does not typecheck** — run this in CI. |
 | `npm run links` | Crawls the built output for broken internal links (run after `build`) |
 | `npm run og` | Regenerates `public/og-default.png` |
+| `npm run art` | Regenerates the illustrations in `src/assets/generated/` |
+
+### Artwork
+
+The bookshelf, manuscript and grain images are **drawn programmatically** by
+`scripts/generate-art.mjs` in the brand palette — no stock photography, so no
+licensing questions. The generator is seeded, so output is reproducible and does
+not churn in git. Replace them with real photography whenever it exists; the
+`<Image>` calls need no changes beyond the import path.
 
 ## 4. Node version
 

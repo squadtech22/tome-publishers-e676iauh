@@ -1,0 +1,29 @@
+---
+/** Gold rule-and-diamond divider, echoing the wordmark lockup. */
+interface Props {
+  tone?: 'dark' | 'light';
+  class?: string;
+  /** `full` spans the container; `short` is a centred 180px accent. */
+  width?: 'full' | 'short';
+}
+
+const { tone = 'light', class: className = '', width = 'short' } = Astro.props;
+
+const stroke = tone === 'dark' ? 'var(--color-rule-gold)' : 'var(--color-rule-gold)';
+const opacity = tone === 'dark' ? 0.75 : 0.6;
+---
+
+<div class={`flex items-center justify-center ${width === 'full' ? 'w-full' : 'w-[180px]'} ${className}`}>
+  <span class="h-px flex-1" style={`background:${stroke};opacity:${opacity}`}></span>
+  <svg
+    width="11"
+    height="11"
+    viewBox="0 0 11 11"
+    aria-hidden="true"
+    class="mx-3 shrink-0"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M5.5 0 L11 5.5 L5.5 11 L0 5.5 Z" fill={stroke} opacity={opacity + 0.2} />
+  </svg>
+  <span class="h-px flex-1" style={`background:${stroke};opacity:${opacity}`}></span>
+</div>

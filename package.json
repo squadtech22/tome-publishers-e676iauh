@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "og": "node scripts/generate-og.mjs",
-    "links": "node scripts/check-links.mjs"
+    "links": "node scripts/check-links.mjs",
+    "art": "node scripts/generate-art.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

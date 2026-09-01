@@ -13,7 +13,8 @@ const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
-<header class="bg-burgundy text-ivory">
+<header class="grained relative bg-burgundy text-ivory">
+  <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-rule-gold/25"></span>
   <div class="mx-auto max-w-6xl px-6">
     <div class="flex items-center justify-between gap-8 py-5">
       <a href="/" aria-label="TOME Publishers — home" class="shrink-0">

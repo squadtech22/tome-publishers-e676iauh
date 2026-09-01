@@ -218,3 +218,122 @@
 
   .prose-tome img { max-width: 100%; height: auto; }
 }
+
+/* --- Texture ----------------------------------------------------
+   A faint paper grain over dark sections, so large flat areas of
+   burgundy read as cloth binding rather than as flat colour. */
+
+@utility grained {
+  position: relative;
+  isolation: isolate;
+}
+
+.grained::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+
+/* --- Motion -----------------------------------------------------
+   Reveal-on-scroll. Elements are only hidden when JavaScript is
+   available (`.js` is set by an inline script in Base.astro), so a
+   no-JS visitor sees the full page immediately rather than a blank one.
+   Reduced-motion visitors also skip straight to the visible state. */
+
+@layer base {
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
+
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 750ms cubic-bezier(0.22, 0.61, 0.24, 1),
+      transform 750ms cubic-bezier(0.22, 0.61, 0.24, 1);
+    transition-delay: calc(var(--reveal-delay, 0) * 90ms);
+    will-change: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal,
+    .js .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}
+
+/* --- Interaction polish ------------------------------------------ */
+
+@layer components {
+  /* Gold rule that draws itself in from the left on hover. */
+  .link-sweep {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 400ms cubic-bezier(0.22, 0.61, 0.24, 1);
+    padding-bottom: 2px;
+  }
+
+  .link-sweep:hover,
+  .link-sweep:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Cards lift very slightly — 3px, not a bounce. */
+  .lift {
+    transition:
+      transform 420ms cubic-bezier(0.22, 0.61, 0.24, 1),
+      box-shadow 420ms cubic-bezier(0.22, 0.61, 0.24, 1);
+  }
+
+  .lift:hover {
+    transform: translateY(-3px);
+  }
+
+  /* Arrow nudge on "read more" affordances. */
+  .nudge {
+    display: inline-block;
+    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.24, 1);
+  }
+
+  .group:hover .nudge {
+    transform: translateX(4px);
+  }
+
+  /* Book covers ease up under the cursor and gain a deeper shadow. */
+  .cover-hover {
+    transition:
+      transform 620ms cubic-bezier(0.22, 0.61, 0.24, 1),
+      box-shadow 620ms cubic-bezier(0.22, 0.61, 0.24, 1);
+    box-shadow: 0 6px 18px -10px rgb(32 28 29 / 0.5);
+  }
+
+  .group:hover .cover-hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 24px 44px -20px rgb(32 28 29 / 0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lift,
+    .nudge,
+    .cover-hover,
+    .link-sweep {
+      transition: none;
+    }
+    .lift:hover,
+    .group:hover .cover-hover {
+      transform: none;
+    }
+  }
+}
