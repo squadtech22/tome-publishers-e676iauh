@@ -97,19 +97,16 @@ the build warns and Vercel picks its own default.
 ## 6. Pre-launch checklist
 
 - [ ] Replace the placeholder wordmark with outlined SVG paths (see `BRAND.md`)
-- [ ] **Confirm TOME actually published the 12 catalogue titles.** They were
-      taken from amazopublishers.com on 2026-09-02. Every book detail page
-      emits `Book` structured data naming TOME as the `publisher`, so this is
-      asserted to search engines in machine-readable form. If TOME did not
-      publish them, either remove them or change the `publisher` field in
-      `src/pages/books/[slug].astro`.
+- [x] ~~Confirm the catalogue and cover artwork can be used here.~~ The site
+      owner confirmed on 2026-09-02 that they own both `tomepublishers.com`
+      and `amazopublishers.com` and hold the rights to both. Book detail pages
+      name TOME as the `publisher` in their `Book` structured data on that
+      basis.
 - [ ] Add `blurb` and `pubDate` to book frontmatter once real values are known
       (both are optional, and deliberately left empty rather than invented)
-- [ ] **Confirm rights to the cover artwork.** The 12 jackets in
-      `src/assets/covers/` were downloaded from amazopublishers.com on
-      2026-09-02. They are the work of the books' publisher and illustrators.
-      Removing any image is safe — `BookCover.astro` falls back to a generated
-      cover for titles without a `cover:` field.
+- [x] ~~Confirm rights to the cover artwork.~~ Owned — see above. Removing any
+      image is still safe: `BookCover.astro` falls back to a generated cover
+      for titles without a `cover:` field.
 - [ ] Add `src/content/authors/` profiles — each `name` must match the
       `author` string in book frontmatter **exactly**, and the filename must
       equal `toSlug(name)`. Use only publicly stated biography details.
