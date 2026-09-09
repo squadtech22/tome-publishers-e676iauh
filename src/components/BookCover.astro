@@ -39,51 +39,96 @@ const shown = lines.slice(0, 3);
 const startY = 150 - (shown.length - 1) * 15;
 ---
 
-{cover ? (
-  <Image
-    src={cover}
-    alt={`Cover of ${title} by ${author}`}
-    widths={featured ? [400, 600, 800] : [200, 300, 400]}
-    sizes={featured ? '(max-width: 768px) 80vw, 400px' : '(max-width: 768px) 45vw, 260px'}
-    class={`w-full h-auto shadow-lg ${className}`}
-  />
-) : (
-  <svg
-    class={`w-full h-auto shadow-lg ${className}`}
-    viewBox="0 0 300 450"
-    role="img"
-    aria-label={`Placeholder cover for ${title} by ${author}`}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect width="300" height="450" fill={ground} />
-    <rect x="12" y="12" width="276" height="426" fill="none" stroke="var(--color-rule-gold)" stroke-width="1" opacity="0.5" />
+{/*
+  Real jackets arrive at inconsistent ratios (1.29 to 1.62 across the current
+  catalogue). A fixed 2:3 box with object-contain keeps every cover the same
+  footprint — so titles beneath them stay aligned — without ever cropping
+  artwork, which on a book cover would cut into the title.
+*/}
+<div class={`relative aspect-[2/3] ${className}`}>
+  {
+    cover ? (
+      <Image
+        src={cover}
+        alt={`Cover of ${title} by ${author}`}
+        widths={featured ? [300, 450, 600] : [200, 300, 400]}
+        sizes={featured ? '(max-width: 768px) 80vw, 300px' : '(max-width: 768px) 45vw, 260px'}
+        class="h-full w-full object-contain object-center"
+      />
+    ) : (
+      <svg
+        class="h-full w-full"
+        viewBox="0 0 300 450"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label={`Placeholder cover for ${title} by ${author}`}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="300" height="450" fill={ground} />
+        <rect
+          x="12"
+          y="12"
+          width="276"
+          height="426"
+          fill="none"
+          stroke="var(--color-rule-gold)"
+          stroke-width="1"
+          opacity="0.5"
+        />
 
-    <text
-      x="150" y="62" text-anchor="middle"
-      fill="var(--color-rule-gold)"
-      style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.32em;"
-    >TOME</text>
+        <text
+          x="150"
+          y="62"
+          text-anchor="middle"
+          fill="var(--color-rule-gold)"
+          style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.32em;"
+        >
+          TOME
+        </text>
 
-    {shown.map((line, i) => (
-      <text
-        x="150" y={startY + i * 30} text-anchor="middle"
-        fill="var(--color-gold)"
-        style="font-family: var(--font-display); font-size: 27px; font-weight: 600;"
-      >{line}</text>
-    ))}
+        {shown.map((line, i) => (
+          <text
+            x="150"
+            y={startY + i * 30}
+            text-anchor="middle"
+            fill="var(--color-gold)"
+            style="font-family: var(--font-display); font-size: 27px; font-weight: 600;"
+          >
+            {line}
+          </text>
+        ))}
 
-    <line x1="110" y1={ruleY + 90} x2="190" y2={ruleY + 90} stroke="var(--color-rule-gold)" stroke-width="1" />
+        <line
+          x1="110"
+          y1={ruleY + 90}
+          x2="190"
+          y2={ruleY + 90}
+          stroke="var(--color-rule-gold)"
+          stroke-width="1"
+        />
 
-    <text
-      x="150" y={ruleY + 122} text-anchor="middle"
-      fill="var(--color-ivory)" opacity="0.72"
-      style="font-family: var(--font-editorial); font-size: 15px;"
-    >{author}</text>
+        <text
+          x="150"
+          y={ruleY + 122}
+          text-anchor="middle"
+          fill="var(--color-ivory)"
+          opacity="0.72"
+          style="font-family: var(--font-editorial); font-size: 15px;"
+        >
+          {author}
+        </text>
 
-    <text
-      x="150" y="418" text-anchor="middle"
-      fill="var(--color-rule-gold)" opacity="0.6"
-      style="font-family: var(--font-body); font-size: 9px; font-weight: 600; letter-spacing: 0.22em;"
-    >PUBLISHERS</text>
-  </svg>
-)}
+        <text
+          x="150"
+          y="418"
+          text-anchor="middle"
+          fill="var(--color-rule-gold)"
+          opacity="0.6"
+          style="font-family: var(--font-body); font-size: 9px; font-weight: 600; letter-spacing: 0.22em;"
+        >
+          PUBLISHERS
+        </text>
+      </svg>
+    )
+  }
+</div>

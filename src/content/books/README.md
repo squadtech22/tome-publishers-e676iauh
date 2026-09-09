@@ -10,9 +10,12 @@ values are known:**
   would mean inventing descriptions of real books we have not read.
 - `pubDate` — no publication dates were published either. Undated titles sort
   after dated ones (see `getBooks` in `src/lib/content.ts`).
-- `cover` — the real jacket artwork belongs to its publisher and illustrators.
-  Until licensed copies are supplied, `BookCover.astro` draws a generated
-  cover instead. Add `cover:` to frontmatter and it switches automatically.
+Jacket images in `src/assets/covers/` were downloaded from the same source on
+2026-09-02 at the site owner's instruction. **This artwork belongs to the
+books' publisher and illustrators** — confirm the right to use it on this
+domain before launch. `BookCover.astro` falls back to a generated cover for
+any title without a `cover:` field, so removing an image degrades gracefully
+rather than breaking the page.
 
 **Before this catalogue goes live**, confirm that TOME actually published these
 titles. Each detail page emits `Book` structured data naming TOME as the

@@ -105,9 +105,11 @@ the build warns and Vercel picks its own default.
       `src/pages/books/[slug].astro`.
 - [ ] Add `blurb` and `pubDate` to book frontmatter once real values are known
       (both are optional, and deliberately left empty rather than invented)
-- [ ] Supply licensed cover artwork — `BookCover.astro` draws a generated cover
-      until a `cover:` field is present. Do not reuse another publisher's jacket
-      images.
+- [ ] **Confirm rights to the cover artwork.** The 12 jackets in
+      `src/assets/covers/` were downloaded from amazopublishers.com on
+      2026-09-02. They are the work of the books' publisher and illustrators.
+      Removing any image is safe — `BookCover.astro` falls back to a generated
+      cover for titles without a `cover:` field.
 - [ ] Add `src/content/authors/` profiles — each `name` must match the
       `author` string in book frontmatter **exactly**, and the filename must
       equal `toSlug(name)`. Use only publicly stated biography details.
