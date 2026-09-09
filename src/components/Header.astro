@@ -11,13 +11,13 @@ const dropdown = [
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
-const anyServiceCurrent = path.startsWith('/services');
+const dropdownCurrent = dropdown.some((s) => isCurrent(`/services/${s.slug}`));
 
 const linkBase =
-  'label text-ivory/85 transition-colors hover:text-gold aria-[current=page]:text-gold';
+  'nav-label text-ivory/85 transition-colors hover:text-gold aria-[current=page]:text-gold';
 ---
 
-<header class="grained relative bg-burgundy text-ivory">
+<header class="grained relative z-50 bg-burgundy text-ivory">
   <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-rule-gold/25"></span>
 
   <div class="mx-auto max-w-7xl px-6">
@@ -27,7 +27,7 @@ const linkBase =
       </a>
 
       <nav aria-label="Primary" class="hidden xl:block">
-        <ul class="flex items-center gap-6">
+        <ul class="flex items-center gap-5">
           {
             primary.map((service) => (
               <li>
@@ -42,20 +42,26 @@ const linkBase =
             ))
           }
 
-          <li class="relative group">
+          <li class="relative" data-dropdown>
             <button
               type="button"
+              data-dropdown-trigger
               aria-expanded="false"
-              class={`${linkBase} flex items-center gap-1.5 ${anyServiceCurrent ? 'text-gold' : ''}`}
+              aria-controls="services-menu"
+              class={`${linkBase} flex items-center gap-1.5 ${dropdownCurrent ? 'text-gold' : ''}`}
             >
               Other Services
-              <span aria-hidden="true" class="text-[0.6em] transition-transform group-hover:rotate-180">
-                &#9660;
-              </span>
+              <span
+                aria-hidden="true"
+                class="text-[0.6em] transition-transform duration-200"
+                data-dropdown-caret>&#9660;</span
+              >
             </button>
 
             <div
-              class="invisible absolute left-1/2 top-full z-50 w-[34rem] -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+              id="services-menu"
+              data-dropdown-panel
+              class="invisible absolute right-0 top-full z-50 w-[34rem] pt-4 opacity-0 transition-opacity duration-200"
             >
               <ul
                 class="grid grid-cols-2 gap-x-6 gap-y-1 border border-rule-gold/30 bg-burgundy p-6 shadow-2xl"
@@ -65,7 +71,8 @@ const linkBase =
                     <li>
                       <a
                         href={`/services/${service.slug}`}
-                        class="editorial block py-1.5 text-small text-ivory/75 transition-colors hover:text-gold"
+                        aria-current={isCurrent(`/services/${service.slug}`) ? 'page' : undefined}
+                        class="editorial block py-1.5 text-small text-ivory/75 transition-colors hover:text-gold aria-[current=page]:text-gold"
                       >
                         {service.title}
                       </a>
@@ -89,7 +96,7 @@ const linkBase =
           <li>
             <a
               href="/inquiry"
-              class="label lift inline-block bg-gold px-6 py-3 text-burgundy hover:bg-ivory"
+              class="nav-label lift inline-block bg-gold px-5 py-3 text-burgundy hover:bg-ivory"
             >
               Get Started
             </a>
@@ -99,7 +106,7 @@ const linkBase =
 
       <details class="relative xl:hidden">
         <summary
-          class="label cursor-pointer list-none py-2 text-gold [&::-webkit-details-marker]:hidden"
+          class="nav-label cursor-pointer list-none py-2 text-gold [&::-webkit-details-marker]:hidden"
         >
           Menu
         </summary>
@@ -107,7 +114,7 @@ const linkBase =
           aria-label="Primary"
           class="absolute right-0 top-full z-50 mt-2 max-h-[70vh] w-72 overflow-y-auto border border-rule-gold/40 bg-burgundy p-6 shadow-2xl"
         >
-          <p class="label mb-3 text-rule-gold">Services</p>
+          <p class="nav-label mb-3 text-rule-gold">Services</p>
           <ul class="mb-5 space-y-2.5">
             {
               [...SERVICES, ...SPECIALIST_SERVICES, ...ADDITIONAL_SERVICES].map((service) => (
@@ -124,15 +131,68 @@ const linkBase =
           </ul>
 
           <div class="space-y-2.5 border-t border-rule-gold/30 pt-5">
-            <a href="/books" class="label block text-ivory/85 hover:text-gold">Books</a>
-            <a href="/authors" class="label block text-ivory/85 hover:text-gold">Authors</a>
-            <a href="/journal" class="label block text-ivory/85 hover:text-gold">Journal</a>
-            <a href="/about" class="label block text-ivory/85 hover:text-gold">About</a>
-            <a href="/contact" class="label block text-ivory/85 hover:text-gold">Contact</a>
-            <a href="/inquiry" class="label block pt-2 text-gold">Get Started</a>
+            <a href="/books" class="nav-label block text-ivory/85 hover:text-gold">Books</a>
+            <a href="/authors" class="nav-label block text-ivory/85 hover:text-gold">Authors</a>
+            <a href="/journal" class="nav-label block text-ivory/85 hover:text-gold">Journal</a>
+            <a href="/about" class="nav-label block text-ivory/85 hover:text-gold">About</a>
+            <a href="/contact" class="nav-label block text-ivory/85 hover:text-gold">Contact</a>
+            <a href="/inquiry" class="nav-label block pt-2 text-gold">Get Started</a>
           </div>
         </nav>
       </details>
     </div>
   </div>
 </header>
+
+<script>
+  /**
+   * The dropdown was previously hover-only, with a button that did nothing on
+   * click and an aria-expanded that never changed. This drives the real state,
+   * so pointer, keyboard and touch all work and screen readers are told the
+   * truth.
+   */
+  document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach((root) => {
+    const trigger = root.querySelector<HTMLButtonElement>('[data-dropdown-trigger]');
+    const panel = root.querySelector<HTMLElement>('[data-dropdown-panel]');
+    const caret = root.querySelector<HTMLElement>('[data-dropdown-caret]');
+    if (!trigger || !panel) return;
+
+    let open = false;
+    let hoverTimer: number | undefined;
+
+    const setOpen = (next: boolean) => {
+      open = next;
+      trigger.setAttribute('aria-expanded', String(next));
+      panel.classList.toggle('invisible', !next);
+      panel.classList.toggle('opacity-0', !next);
+      if (caret) caret.style.transform = next ? 'rotate(180deg)' : '';
+    };
+
+    trigger.addEventListener('click', () => setOpen(!open));
+
+    // Hover is a convenience for pointer users, not the source of truth.
+    root.addEventListener('mouseenter', () => {
+      window.clearTimeout(hoverTimer);
+      setOpen(true);
+    });
+    root.addEventListener('mouseleave', () => {
+      hoverTimer = window.setTimeout(() => setOpen(false), 120);
+    });
+
+    // Keyboard: focus leaving the group closes it, Escape returns focus.
+    root.addEventListener('focusout', (event) => {
+      if (!root.contains(event.relatedTarget as Node)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && open) {
+        setOpen(false);
+        trigger.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (open && !root.contains(event.target as Node)) setOpen(false);
+    });
+  });
+</script>

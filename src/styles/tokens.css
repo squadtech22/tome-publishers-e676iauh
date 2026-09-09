@@ -337,3 +337,15 @@
     }
   }
 }
+
+/* Nav labels carry less tracking than `.label`. At 0.16em the primary nav
+   needed ~1272px inside a 1232px container and wrapped onto two lines at
+   every desktop width, because max-w-7xl caps at 1280px. */
+@utility nav-label {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
