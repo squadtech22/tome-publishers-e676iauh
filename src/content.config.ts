@@ -15,8 +15,14 @@ const books = defineCollection({
       subtitle: z.string().optional(),
       author: z.string(),
       genre: z.string(),
-      pubDate: z.coerce.date(),
-      blurb: z.string(),
+      /**
+       * Optional: real catalogue entries often arrive without a confirmed
+       * publication date, and inventing one would be worse than omitting it.
+       * Undated books sort after dated ones.
+       */
+      pubDate: z.coerce.date().optional(),
+      /** Optional for the same reason — better blank than fabricated. */
+      blurb: z.string().optional(),
       /** Optional until real jackets arrive; falls back to a generated cover. */
       cover: image().optional(),
       isbn: z.string().optional(),

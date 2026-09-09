@@ -26,7 +26,8 @@ const { books } = Astro.props;
           </h3>
           <p class="editorial mt-1 text-charcoal/70">{book.data.author}</p>
           <p class="metadata mt-2 text-label uppercase tracking-wider text-charcoal/50">
-            {book.data.genre} &middot; {formatYear(book.data.pubDate)}
+            {book.data.genre}
+            {book.data.pubDate && <> &middot; {formatYear(book.data.pubDate)}</>}
           </p>
         </a>
       </li>

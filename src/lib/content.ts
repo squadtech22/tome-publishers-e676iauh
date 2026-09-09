@@ -6,7 +6,17 @@ const isPublished = (entry: { data: { draft: boolean } }) =>
 
 export async function getBooks(): Promise<CollectionEntry<'books'>[]> {
   const books = await getCollection('books', isPublished);
-  return books.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  // Newest first; undated titles fall to the end, alphabetically among
+  // themselves, so the ordering stays stable as dates are filled in.
+  return books.sort((a, b) => {
+    const aDate = a.data.pubDate?.valueOf();
+    const bDate = b.data.pubDate?.valueOf();
+    if (aDate !== undefined && bDate !== undefined) return bDate - aDate;
+    if (aDate !== undefined) return -1;
+    if (bDate !== undefined) return 1;
+    return a.data.title.localeCompare(b.data.title);
+  });
 }
 
 export async function getPosts(): Promise<CollectionEntry<'posts'>[]> {
@@ -19,6 +29,10 @@ export async function getPosts(): Promise<CollectionEntry<'posts'>[]> {
  * intact. Without these, "Ibrahim Køhler" slugs to `ibrahim-k-hler`.
  */
 const SPECIAL_LETTERS: Record<string, string> = {
+  // Apostrophes are dropped rather than turned into separators, so
+  // "Children's" slugs to `childrens`, not `children-s`.
+  "'": '',
+  '’': '',
   ø: 'o',
   æ: 'ae',
   å: 'a',
@@ -37,7 +51,7 @@ export const toSlug = (value: string) =>
     .trim()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
-    .replace(/[øæåßđðłþœ]/g, (ch) => SPECIAL_LETTERS[ch] ?? ch)
+    .replace(/['’øæåßđðłþœ]/g, (ch) => SPECIAL_LETTERS[ch] ?? ch)
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 

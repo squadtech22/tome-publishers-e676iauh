@@ -97,10 +97,23 @@ the build warns and Vercel picks its own default.
 ## 6. Pre-launch checklist
 
 - [ ] Replace the placeholder wordmark with outlined SVG paths (see `BRAND.md`)
-- [ ] Delete every file in `src/content/books/` and add the real catalogue
-- [ ] Replace `src/content/authors/` profiles — each `name` must match the
+- [ ] **Confirm TOME actually published the 12 catalogue titles.** They were
+      taken from amazopublishers.com on 2026-09-02. Every book detail page
+      emits `Book` structured data naming TOME as the `publisher`, so this is
+      asserted to search engines in machine-readable form. If TOME did not
+      publish them, either remove them or change the `publisher` field in
+      `src/pages/books/[slug].astro`.
+- [ ] Add `blurb` and `pubDate` to book frontmatter once real values are known
+      (both are optional, and deliberately left empty rather than invented)
+- [ ] Supply licensed cover artwork — `BookCover.astro` draws a generated cover
+      until a `cover:` field is present. Do not reuse another publisher's jacket
+      images.
+- [ ] Add `src/content/authors/` profiles — each `name` must match the
       `author` string in book frontmatter **exactly**, and the filename must
-      equal `toSlug(name)`
+      equal `toSlug(name)`. Use only publicly stated biography details.
+- [ ] Decide how co-authored titles should be modelled. `Simple as Time` is
+      credited to "Judy Shank Cyg & William Horn", which currently produces a
+      single combined author page separate from Judy Shank Cyg's own.
 - [ ] Replace `src/content/posts/` with real editorial articles
 - [ ] Review the marketing copy on `/about`, `/services`, `/process` and `/faq` —
       it is written to be plausible, but the pricing, timeline and rights claims
