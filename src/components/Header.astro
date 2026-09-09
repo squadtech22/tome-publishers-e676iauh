@@ -1,83 +1,136 @@
 ---
 import Wordmark from '~/components/Wordmark.astro';
+import { SERVICES, SPECIALIST_SERVICES, ADDITIONAL_SERVICES } from '~/data/site';
 
-const nav = [
-  { href: '/books', label: 'Books' },
-  { href: '/authors', label: 'Authors' },
-  { href: '/services', label: 'Services' },
-  { href: '/journal', label: 'Journal' },
-  { href: '/about', label: 'About' },
+const primary = SERVICES.filter((s) => s.primary);
+const dropdown = [
+  ...SERVICES.filter((s) => !s.primary),
+  ...SPECIALIST_SERVICES,
+  ...ADDITIONAL_SERVICES,
 ];
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+const anyServiceCurrent = path.startsWith('/services');
+
+const linkBase =
+  'label text-ivory/85 transition-colors hover:text-gold aria-[current=page]:text-gold';
 ---
 
 <header class="grained relative bg-burgundy text-ivory">
   <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-rule-gold/25"></span>
-  <div class="mx-auto max-w-6xl px-6">
-    <div class="flex items-center justify-between gap-8 py-5">
+
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="flex items-center justify-between gap-6 py-5">
       <a href="/" aria-label="TOME Publishers — home" class="shrink-0">
         <Wordmark tone="dark" full={false} class="h-9 w-auto" />
       </a>
 
-      <nav aria-label="Primary" class="hidden lg:block">
-        <ul class="flex items-center gap-7">
+      <nav aria-label="Primary" class="hidden xl:block">
+        <ul class="flex items-center gap-6">
           {
-            nav.map(({ href, label }) => (
+            primary.map((service) => (
               <li>
                 <a
-                  href={href}
-                  aria-current={isCurrent(href) ? 'page' : undefined}
-                  class="label text-ivory/85 hover:text-gold aria-[current=page]:text-gold transition-colors"
+                  href={`/services/${service.slug}`}
+                  aria-current={isCurrent(`/services/${service.slug}`) ? 'page' : undefined}
+                  class={linkBase}
                 >
-                  {label}
+                  {service.title.replace(' & Proofreading', '').replace('Book ', '')}
                 </a>
               </li>
             ))
           }
+
+          <li class="relative group">
+            <button
+              type="button"
+              aria-expanded="false"
+              class={`${linkBase} flex items-center gap-1.5 ${anyServiceCurrent ? 'text-gold' : ''}`}
+            >
+              Other Services
+              <span aria-hidden="true" class="text-[0.6em] transition-transform group-hover:rotate-180">
+                &#9660;
+              </span>
+            </button>
+
+            <div
+              class="invisible absolute left-1/2 top-full z-50 w-[34rem] -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+            >
+              <ul
+                class="grid grid-cols-2 gap-x-6 gap-y-1 border border-rule-gold/30 bg-burgundy p-6 shadow-2xl"
+              >
+                {
+                  dropdown.map((service) => (
+                    <li>
+                      <a
+                        href={`/services/${service.slug}`}
+                        class="editorial block py-1.5 text-small text-ivory/75 transition-colors hover:text-gold"
+                      >
+                        {service.title}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <a href="/books" aria-current={isCurrent('/books') ? 'page' : undefined} class={linkBase}>
+              Books
+            </a>
+          </li>
+          <li>
+            <a href="/about" aria-current={isCurrent('/about') ? 'page' : undefined} class={linkBase}>
+              About
+            </a>
+          </li>
           <li>
             <a
               href="/inquiry"
-              class="label inline-block border border-rule-gold px-5 py-2.5 text-gold hover:bg-gold hover:text-burgundy transition-colors"
+              class="label lift inline-block bg-gold px-6 py-3 text-burgundy hover:bg-ivory"
             >
-              Start Your Book
+              Get Started
             </a>
           </li>
         </ul>
       </nav>
 
-      <details class="lg:hidden relative">
+      <details class="relative xl:hidden">
         <summary
-          class="label list-none cursor-pointer py-2 text-gold [&::-webkit-details-marker]:hidden"
+          class="label cursor-pointer list-none py-2 text-gold [&::-webkit-details-marker]:hidden"
         >
           Menu
         </summary>
         <nav
           aria-label="Primary"
-          class="absolute right-0 top-full z-40 mt-2 w-60 border border-rule-gold/40 bg-burgundy p-5 shadow-xl"
+          class="absolute right-0 top-full z-50 mt-2 max-h-[70vh] w-72 overflow-y-auto border border-rule-gold/40 bg-burgundy p-6 shadow-2xl"
         >
-          <ul class="flex flex-col gap-4">
+          <p class="label mb-3 text-rule-gold">Services</p>
+          <ul class="mb-5 space-y-2.5">
             {
-              nav.map(({ href, label }) => (
+              [...SERVICES, ...SPECIALIST_SERVICES, ...ADDITIONAL_SERVICES].map((service) => (
                 <li>
                   <a
-                    href={href}
-                    aria-current={isCurrent(href) ? 'page' : undefined}
-                    class="label text-ivory/85 hover:text-gold aria-[current=page]:text-gold"
+                    href={`/services/${service.slug}`}
+                    class="editorial text-small text-ivory/80 hover:text-gold"
                   >
-                    {label}
+                    {service.title}
                   </a>
                 </li>
               ))
             }
-            <li>
-              <a href="/contact" class="label text-ivory/85 hover:text-gold">Contact</a>
-            </li>
-            <li class="border-t border-rule-gold/30 pt-4">
-              <a href="/inquiry" class="label text-gold">Start Your Book</a>
-            </li>
           </ul>
+
+          <div class="space-y-2.5 border-t border-rule-gold/30 pt-5">
+            <a href="/books" class="label block text-ivory/85 hover:text-gold">Books</a>
+            <a href="/authors" class="label block text-ivory/85 hover:text-gold">Authors</a>
+            <a href="/journal" class="label block text-ivory/85 hover:text-gold">Journal</a>
+            <a href="/about" class="label block text-ivory/85 hover:text-gold">About</a>
+            <a href="/contact" class="label block text-ivory/85 hover:text-gold">Contact</a>
+            <a href="/inquiry" class="label block pt-2 text-gold">Get Started</a>
+          </div>
         </nav>
       </details>
     </div>

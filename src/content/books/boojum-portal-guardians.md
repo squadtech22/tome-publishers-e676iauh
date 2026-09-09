@@ -4,4 +4,5 @@ author: "Judy Shank Cyg"
 genre: "Children's"
 featured: true
 cover: "../../assets/covers/boojum-portal-guardians.jpeg"
+rating: 4.6
 ---

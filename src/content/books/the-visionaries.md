@@ -4,4 +4,5 @@ author: "JT Beleno"
 genre: "Fiction"
 featured: true
 cover: "../../assets/covers/the-visionaries.jpeg"
+rating: 4.4
 ---

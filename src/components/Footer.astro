@@ -12,12 +12,21 @@ const columns = [
     ],
   },
   {
+    heading: 'Services',
+    links: [
+      { href: '/services/ghostwriting', label: 'Ghostwriting' },
+      { href: '/services/book-editing-proofreading', label: 'Editing & Proofreading' },
+      { href: '/services/book-cover-design', label: 'Cover Design' },
+      { href: '/services/book-marketing', label: 'Marketing' },
+      { href: '/services', label: 'All Services' },
+    ],
+  },
+  {
     heading: 'Publishing',
     links: [
-      { href: '/services', label: 'Services' },
       { href: '/process', label: 'Process' },
       { href: '/faq', label: 'FAQ' },
-      { href: '/inquiry', label: 'Start Your Book' },
+      { href: '/inquiry', label: 'Get Started' },
     ],
   },
   {
@@ -36,13 +45,13 @@ const year = new Date().getFullYear();
 
 <footer class="grained bg-charcoal text-ivory">
   <div class="mx-auto max-w-6xl px-6 py-16">
-    <div class="grid gap-12 md:grid-cols-[1.2fr_2fr]">
+    <div class="grid gap-12 lg:grid-cols-[1fr_2.4fr]">
       <div>
         <Wordmark tone="dark" class="h-24 w-auto" />
         <p class="editorial mt-6 max-w-xs text-ivory/70">Every great book begins with an idea.</p>
       </div>
 
-      <nav aria-label="Footer" class="grid gap-10 sm:grid-cols-3">
+      <nav aria-label="Footer" class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {
           columns.map((column) => (
             <div>

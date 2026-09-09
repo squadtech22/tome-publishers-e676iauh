@@ -1,0 +1,138 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '~/layouts/Base.astro';
+import Ornament from '~/components/Ornament.astro';
+import { ALL_SERVICES, PROCESS_STEPS, type Service } from '~/data/site';
+
+export const getStaticPaths: GetStaticPaths = () =>
+  ALL_SERVICES.map((service) => ({
+    params: { slug: service.slug },
+    props: {
+      service,
+      others: ALL_SERVICES.filter((s) => s.slug !== service.slug).slice(0, 6),
+    },
+  }));
+
+interface Props {
+  service: Service;
+  others: Service[];
+}
+
+const { service, others } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: service.title,
+  description: service.summary,
+  provider: { '@type': 'Organization', name: 'TOME Publishers' },
+  areaServed: 'Worldwide',
+};
+---
+
+<Base title={service.title} description={service.summary}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="grained bg-burgundy text-ivory">
+    <div class="mx-auto max-w-4xl px-6 py-24">
+      <nav aria-label="Breadcrumb" class="label mb-8 text-rule-gold">
+        <a href="/#services" class="link-sweep hover:text-gold">Services</a>
+      </nav>
+
+      <h1 class="text-ivory">{service.title}</h1>
+      <Ornament tone="dark" class="mt-8 !w-[120px] !justify-start" />
+
+      <p class="editorial mt-8 max-w-2xl text-h4 text-gold/90">{service.summary}</p>
+
+      <div class="mt-12 flex flex-wrap gap-4">
+        <a href="/inquiry" class="label lift bg-gold px-8 py-4 text-burgundy hover:bg-ivory">
+          Get Started
+        </a>
+        <a
+          href="/contact"
+          class="label lift border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10"
+        >
+          Ask a question
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-3xl px-6 py-20">
+    <p class="reveal editorial text-h4 text-charcoal/85">{service.body}</p>
+
+    <div class="reveal mt-14">
+      <h2 class="label border-b border-rule-gold pb-3 text-burgundy">What&rsquo;s included</h2>
+      <ul class="mt-8 space-y-4">
+        {
+          service.includes.map((item) => (
+            <li class="editorial flex items-start gap-4 text-charcoal/80">
+              <span aria-hidden="true" class="mt-2.5 block h-1.5 w-1.5 shrink-0 rotate-45 bg-rule-gold" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <section class="bg-charcoal/[0.03]">
+    <div class="mx-auto max-w-5xl px-6 py-20">
+      <div class="reveal max-w-2xl">
+        <p class="label text-rule-gold">How It Works</p>
+        <h2 class="mt-4 text-h3">Six stages, every one visible to you</h2>
+      </div>
+
+      <ol class="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          PROCESS_STEPS.map((step, i) => (
+            <li class="reveal border-t border-rule-gold/40 pt-5" style={`--reveal-delay:${i % 3}`}>
+              <p class="metadata text-label uppercase tracking-widest text-rule-gold">
+                Step {step.n}
+              </p>
+              <h3 class="mt-2 text-h4">{step.title}</h3>
+              <p class="editorial mt-2 text-small text-charcoal/70">{step.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-6 py-20">
+    <h2 class="reveal label border-b border-rule-gold pb-3 text-burgundy">Other services</h2>
+    <ul class="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        others.map((other) => (
+          <li class="reveal">
+            <a href={`/services/${other.slug}`} class="group block py-2">
+              <span class="editorial text-h4 text-burgundy transition-opacity group-hover:opacity-70">
+                {other.title}
+              </span>
+              <span aria-hidden="true" class="nudge ml-1 text-rule-gold">
+                &rarr;
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="grained bg-burgundy text-ivory">
+    <div class="reveal mx-auto max-w-3xl px-6 py-24 text-center">
+      <h2 class="text-h2 text-ivory">Tell your story to the world</h2>
+      <Ornament tone="dark" class="mx-auto mt-8" />
+      <p class="editorial mt-8 text-ivory/75">
+        Leave us three details and we will come back with an honest read on your
+        book — scope, timeline and cost, before you commit to anything.
+      </p>
+      <a
+        href="/inquiry"
+        class="label lift mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory"
+      >
+        Let&rsquo;s start
+      </a>
+    </div>
+  </section>
+</Base>

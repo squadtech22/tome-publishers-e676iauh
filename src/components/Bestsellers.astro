@@ -1,0 +1,115 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BookCover from '~/components/BookCover.astro';
+import { toSlug } from '~/lib/content';
+
+interface Props {
+  books: CollectionEntry<'books'>[];
+}
+const { books } = Astro.props;
+
+const genres = [...new Set(books.map((b) => b.data.genre))].sort();
+---
+
+<div class="bestsellers">
+  <nav aria-label="Filter by genre" class="reveal">
+    <ul class="flex flex-wrap gap-3">
+      <li>
+        <button
+          type="button"
+          data-filter="all"
+          aria-pressed="true"
+          class="filter-btn label border border-burgundy bg-burgundy px-4 py-2 text-ivory transition-colors"
+        >
+          All
+        </button>
+      </li>
+      {
+        genres.map((genre) => (
+          <li>
+            <button
+              type="button"
+              data-filter={toSlug(genre)}
+              aria-pressed="false"
+              class="filter-btn label border border-rule-gold/50 px-4 py-2 text-charcoal/70 transition-colors hover:border-burgundy hover:text-burgundy"
+            >
+              {genre}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <ul class="mt-12 grid grid-cols-2 gap-x-8 gap-y-14 md:grid-cols-3 lg:grid-cols-4">
+    {
+      books.map((book, i) => (
+        <li class="reveal book-card" data-genre={toSlug(book.data.genre)} style={`--reveal-delay:${i % 4}`}>
+          <a href={`/books/${book.id}`} class="group block">
+            <BookCover
+              title={book.data.title}
+              author={book.data.author}
+              cover={book.data.cover}
+              class="cover-hover"
+            />
+
+            <p class="metadata mt-5 flex items-center justify-between gap-3 text-label uppercase tracking-wider text-charcoal/50">
+              <span class="text-rule-gold">{book.data.genre}</span>
+              {book.data.rating && (
+                <span class="shrink-0 text-charcoal/60">
+                  <span aria-hidden="true" class="text-rule-gold">
+                    &#9733;
+                  </span>
+                  <span class="sr-only">Rated</span>
+                  {book.data.rating.toFixed(1)}
+                  <span class="sr-only">out of 5</span>
+                </span>
+              )}
+            </p>
+
+            <h3 class="mt-2 text-h4 transition-colors group-hover:text-burgundy/70">
+              {book.data.title}
+            </h3>
+            <p class="editorial mt-1 text-charcoal/70">{book.data.author}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="mt-12 text-center">
+    <a
+      href="/books"
+      class="label lift inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
+    >
+      See the full catalog
+    </a>
+  </p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.bestsellers').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const cards = root.querySelectorAll<HTMLElement>('.book-card');
+
+    const active = 'border-burgundy bg-burgundy text-ivory';
+    const idle = 'border-rule-gold/50 text-charcoal/70 hover:border-burgundy hover:text-burgundy';
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter ?? 'all';
+
+        buttons.forEach((other) => {
+          const on = other === btn;
+          other.setAttribute('aria-pressed', String(on));
+          other.className = `filter-btn label border px-4 py-2 transition-colors ${on ? active : idle}`;
+        });
+
+        cards.forEach((card) => {
+          const show = filter === 'all' || card.dataset.genre === filter;
+          card.hidden = !show;
+        });
+      });
+    });
+  });
+</script>

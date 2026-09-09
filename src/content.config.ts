@@ -25,6 +25,8 @@ const books = defineCollection({
       blurb: z.string().optional(),
       /** Optional until real jackets arrive; falls back to a generated cover. */
       cover: image().optional(),
+      /** Average reader rating out of 5, where one is known. */
+      rating: z.number().min(0).max(5).optional(),
       isbn: z.string().optional(),
       pages: z.number().optional(),
       formats: z.array(z.enum(['Hardcover', 'Paperback', 'eBook', 'Audiobook'])).default([]),

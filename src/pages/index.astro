@@ -1,100 +1,90 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
-import BookGrid from '~/components/BookGrid.astro';
 import Ornament from '~/components/Ornament.astro';
+import Bestsellers from '~/components/Bestsellers.astro';
 import heroSpines from '~/assets/generated/hero-spines.png';
-import { getBooks, getPosts, getAuthors, formatDate } from '~/lib/content';
+import { getBooks } from '~/lib/content';
+import {
+  SERVICES,
+  ADDITIONAL_SERVICES,
+  GENRE_GROUPS,
+  PROCESS_STEPS,
+  TESTIMONIALS,
+  FAQS,
+  RETAILERS,
+  HERO_PROMISES,
+  STATS,
+} from '~/data/site';
 
-const [books, posts, authors] = await Promise.all([getBooks(), getPosts(), getAuthors()]);
+const books = await getBooks();
 
-// Fall back to the most recent titles if nothing is flagged as featured.
-const featuredBooks = books.filter((b) => b.data.featured);
-const shelf = (featuredBooks.length > 0 ? featuredBooks : books).slice(0, 4);
-const latestPosts = posts.slice(0, 3);
-
-const pillars = [
-  {
-    n: '01',
-    title: 'Publishing',
-    body: 'Ghostwriting, editorial development, and a route to print that treats your manuscript as literature rather than inventory.',
-  },
-  {
-    n: '02',
-    title: 'Design',
-    body: 'Covers, interiors, and typesetting drawn with the same care as the words they carry.',
-  },
-  {
-    n: '03',
-    title: 'Marketing',
-    body: 'Positioning and campaigns that put finished books in front of the readers most likely to love them.',
-  },
-];
-
-const stats = [
-  { figure: String(books.length), label: 'Titles in print' },
-  { figure: String(authors.length), label: 'Authors on the list' },
-  { figure: '6', label: 'Books taken a year' },
-  { figure: '2', label: 'Days to a reply' },
-];
-
-const processPreview = [
-  ['01', 'The reading', 'An editor reads your manuscript properly and writes back honestly. No charge, no obligation.'],
-  ['02', 'The plan', 'We scope exactly what the book needs, in writing, before anything begins.'],
-  ['03', 'The work', 'Editorial, design and launch — with your approval at every stage.'],
-];
-
-const testimonials = [
-  {
-    quote:
-      'They told me the middle third was not working, and then spent four months helping me fix it. Nobody else had been willing to say the first part.',
-    name: 'Margery Ash',
-    book: 'What the Orchard Knew',
-  },
-  {
-    quote:
-      'I came in expecting a production service and got an argument about my own book instead. It is a much better book for it.',
-    name: 'Daniel Vaszquez',
-    book: 'The Quiet Ledger',
-  },
-];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((faq) => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: { '@type': 'Answer', text: faq.a },
+  })),
+};
 ---
 
-<Base title="home">
-  <!-- Hero -->
+<Base
+  title="home"
+  description="Ghostwriting, editing, cover design, publishing and marketing. TOME turns a manuscript, an outline or a half-formed idea into a book that exists — published under your own name."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- 1. Hero -->
   <section class="grained relative overflow-hidden bg-burgundy text-ivory">
-    <div class="mx-auto grid max-w-6xl gap-16 px-6 py-24 md:py-32 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+    <div
+      class="mx-auto grid max-w-7xl gap-16 px-6 py-24 md:py-32 lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
+    >
       <div class="reveal">
-        <p class="label text-rule-gold">Publishing &middot; Design &middot; Marketing</p>
+        <p class="label text-rule-gold">Ghostwriting &middot; Editing &middot; Publishing</p>
         <Ornament tone="dark" class="mt-5 !w-[120px] !justify-start" />
 
         <h1 class="mt-8 text-ivory">
-          Your Story Deserves a <span class="text-gold">TOME</span>.
+          Unlock your imagination with <span class="text-gold">TOME</span>
         </h1>
 
-        <p class="editorial mt-8 max-w-xl text-h4 italic text-gold/90">
-          Every great book begins with an idea.
+        <p class="mt-8 max-w-xl text-ivory/75">
+          We give writers a place to turn a manuscript, an outline, or a half-formed
+          idea into a book that exists in the world — edited properly, designed
+          properly, and published under your own name.
         </p>
 
-        <p class="mt-6 max-w-xl text-ivory/75">
-          From ghostwriting and editorial development to publishing, design, printing
-          and marketing, TOME helps authors bring their books to life.
-        </p>
+        <div class="mt-10 border-l-2 border-rule-gold pl-6">
+          <p class="label mb-4 text-rule-gold">Here&rsquo;s what&rsquo;s in store</p>
+          <ul class="editorial space-y-2.5 text-ivory/85">
+            {
+              HERO_PROMISES.map((promise) => (
+                <li class="flex items-start gap-3">
+                  <span aria-hidden="true" class="mt-2 block h-1.5 w-1.5 rotate-45 bg-gold" />
+                  {promise}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
 
-        <div class="mt-12 flex flex-wrap gap-4">
-          <a
-            href="/inquiry"
-            class="label lift bg-gold px-8 py-4 text-burgundy hover:bg-ivory"
-          >
-            Start Your Book
+        <div class="mt-12 flex flex-wrap items-center gap-4">
+          <a href="/inquiry" class="label lift bg-gold px-8 py-4 text-burgundy hover:bg-ivory">
+            Get Started
           </a>
           <a
-            href="/books"
+            href="#services"
             class="label lift border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10"
           >
-            Browse the Catalog
+            See our services
           </a>
         </div>
+
+        <p class="metadata mt-8 text-small text-ivory/55">
+          <span aria-hidden="true" class="mr-2 text-rule-gold">&#9670;</span>
+          Authors keep 100% of royalties
+        </p>
       </div>
 
       <div class="reveal hidden lg:block" style="--reveal-delay:2">
@@ -109,24 +99,76 @@ const testimonials = [
           />
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute inset-0 border border-rule-gold/30"
-          ></span>
+            class="pointer-events-none absolute inset-0 border border-rule-gold/30"></span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Stats -->
+  <!-- 2. Who we are -->
+  <section class="bg-charcoal/[0.03]">
+    <div class="mx-auto max-w-4xl px-6 py-24">
+      <div class="reveal">
+        <p class="label text-rule-gold">Who We Are</p>
+        <h2 class="mt-5 text-h2">Expert book writers, to bring your literary vision to life</h2>
+      </div>
+
+      <div class="reveal editorial mt-10 space-y-6 text-charcoal/80" style="--reveal-delay:1">
+        <p>
+          TOME exists because too many good manuscripts die in a drawer between
+          finishing and publishing. That gap is full of technical work — editing,
+          typesetting, ISBNs, metadata, distribution — and none of it is why you
+          started writing.
+        </p>
+        <p>
+          We handle that part. Your ideas stay yours: we safeguard the creative
+          integrity of the work while doing the unglamorous production that stands
+          between a draft and a book on a shelf.
+        </p>
+        <p class="text-h4 italic text-burgundy">
+          You wrote the book. We do the part that stands between the draft and the
+          shelf — and when it goes on sale, your name is the only one on the cover.
+        </p>
+      </div>
+
+      <div class="reveal mt-10 flex flex-wrap gap-4">
+        <a
+          href="/inquiry"
+          class="label lift bg-burgundy px-8 py-4 text-ivory hover:bg-burgundy/90"
+        >
+          Get Started
+        </a>
+        <a
+          href="/about"
+          class="label lift border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
+        >
+          More about us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Stats -->
   <section class="grained bg-charcoal text-ivory">
-    <div class="mx-auto max-w-5xl px-6 py-16">
-      <dl class="grid grid-cols-2 gap-10 text-center sm:grid-cols-4">
+    <div class="mx-auto max-w-5xl px-6 py-20 text-center">
+      <div class="reveal">
+        <p class="label text-rule-gold">By the Numbers</p>
+        <h2 class="mt-4 text-h3 text-ivory">A team that has done this before</h2>
+        <p class="editorial mx-auto mt-5 max-w-xl text-ivory/70">
+          Editors, designers and production staff who work on books full time — not a
+          marketplace of freelancers assembled per project.
+        </p>
+      </div>
+
+      <dl class="mt-14 grid grid-cols-1 gap-12 sm:grid-cols-3">
         {
-          stats.map((stat, i) => (
-            /* column-reverse puts the figure above the label visually while
-               keeping dt-then-dd order in the DOM for assistive tech. */
+          STATS.map((stat, i) => (
             <div class="reveal flex flex-col-reverse gap-3" style={`--reveal-delay:${i}`}>
               <dt class="label text-ivory/60">{stat.label}</dt>
-              <dd class="metadata text-h2 leading-none text-gold">{stat.figure}</dd>
+              <dd class="metadata text-h2 leading-none text-gold">
+                {stat.figure}
+                {stat.suffix}
+              </dd>
             </div>
           ))
         }
@@ -134,166 +176,271 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- Pillars -->
-  <section class="mx-auto max-w-6xl px-6 py-24">
-    <div class="grid gap-12 md:grid-cols-3">
-      {
-        pillars.map(({ n, title, body }, i) => (
-          <article class="reveal" style={`--reveal-delay:${i}`}>
-            <p class="metadata text-h2 leading-none text-rule-gold">{n}</p>
-            <div class="mt-4 h-px w-12 bg-rule-gold" />
-            <h2 class="mt-6 text-h3">{title}</h2>
-            <p class="editorial mt-4 text-charcoal/80">{body}</p>
-          </article>
-        ))
-      }
-    </div>
-
-    <div class="reveal">
-      <a
-        href="/services"
-        class="label lift mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
-      >
-        All Services
-      </a>
-    </div>
-  </section>
-
-  <!-- Featured books -->
-  {
-    shelf.length > 0 && (
-      <section class="bg-charcoal/[0.03]">
-        <div class="mx-auto max-w-6xl px-6 py-24">
-          <div class="reveal flex flex-wrap items-baseline justify-between gap-4">
-            <h2 class="text-h2">From the catalog</h2>
-            <a href="/books" class="label group text-burgundy">
-              <span class="link-sweep">All books</span>
-              <span class="nudge ml-1" aria-hidden="true">
-                &rarr;
-              </span>
-            </a>
-          </div>
-
-          <div class="mt-14">
-            <BookGrid books={shelf} />
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- Process preview -->
-  <section class="mx-auto max-w-6xl px-6 py-24">
-    <div class="reveal">
-      <h2 class="text-h2">How it works</h2>
-      <p class="editorial mt-5 max-w-xl text-charcoal/75">
-        Six stages, nine to fourteen months. Here are the first three.
+  <!-- 4. Services -->
+  <section id="services" class="mx-auto max-w-7xl px-6 py-24">
+    <div class="reveal max-w-3xl">
+      <p class="label text-rule-gold">What We Do</p>
+      <h2 class="mt-5 text-h2">Join forces with skilled writers to share your story</h2>
+      <p class="editorial mt-6 text-charcoal/75">
+        Our writing and publishing specialists work on one book at a time, in the
+        genres they actually read.
       </p>
     </div>
 
-    <ol class="mt-14 grid gap-12 md:grid-cols-3">
+    <ul class="mt-16 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-4">
       {
-        processPreview.map(([n, title, body], i) => (
-          <li class="reveal" style={`--reveal-delay:${i}`}>
-            <p class="metadata text-label uppercase tracking-widest text-rule-gold">{n}</p>
-            <h3 class="mt-3 text-h4">{title}</h3>
-            <p class="editorial mt-3 text-charcoal/75">{body}</p>
+        SERVICES.map((service, i) => (
+          <li class="reveal" style={`--reveal-delay:${i % 4}`}>
+            <article class="group flex h-full flex-col border-t border-rule-gold/40 pt-6">
+              <h3 class="text-h4">{service.title}</h3>
+              <p class="editorial mt-4 flex-1 text-charcoal/75">{service.summary}</p>
+              <p class="label mt-6 text-burgundy">
+                <a href={`/services/${service.slug}`} class="link-sweep">
+                  Explore
+                </a>
+                <span aria-hidden="true" class="nudge ml-1">
+                  &rarr;
+                </span>
+              </p>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 5. CTA band -->
+  <section class="grained bg-burgundy text-ivory">
+    <div class="reveal mx-auto max-w-3xl px-6 py-20 text-center">
+      <h2 class="text-h2 text-ivory">Are you ready to become a published author?</h2>
+      <Ornament tone="dark" class="mx-auto mt-8" />
+      <p class="editorial mt-8 text-ivory/75">
+        TOME is your route to a book that exists — properly made, and entirely yours.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="/inquiry" class="label lift bg-gold px-8 py-4 text-burgundy hover:bg-ivory">
+          Get Started
+        </a>
+        <a
+          href="mailto:hello@tomepublishers.com"
+          class="label lift border border-rule-gold px-8 py-4 text-gold hover:bg-rule-gold/10"
+        >
+          Email us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Genres -->
+  <section class="mx-auto max-w-7xl px-6 py-24">
+    <div class="reveal max-w-3xl">
+      <p class="label text-rule-gold">What We Take On</p>
+      <h2 class="mt-5 text-h2">Genres our editors actually read</h2>
+      <p class="editorial mt-6 text-charcoal/75">
+        We match every book to someone who knows the shelf it belongs on — the
+        conventions, the comparable titles and the readers who buy them.
+      </p>
+    </div>
+
+    <div class="mt-16 space-y-14">
+      {
+        GENRE_GROUPS.map((group) => (
+          <div class="reveal">
+            <h3 class="label border-b border-rule-gold pb-3 text-burgundy">{group.heading}</h3>
+            <dl class="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+              {group.items.map(([term, detail]) => (
+                <div>
+                  <dt class="editorial text-h4 text-burgundy">{term}</dt>
+                  <dd class="editorial mt-2 text-charcoal/70">{detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 7. Additional services -->
+  <section class="bg-charcoal/[0.03]">
+    <div class="mx-auto max-w-7xl px-6 py-24">
+      <div class="reveal max-w-2xl">
+        <p class="label text-rule-gold">And Also</p>
+        <h2 class="mt-5 text-h2">Unlock your book&rsquo;s full potential</h2>
+        <p class="editorial mt-6 text-charcoal/75">
+          The work that continues after publication day.
+        </p>
+      </div>
+
+      <ul class="mt-14 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          ADDITIONAL_SERVICES.map((service, i) => (
+            <li class="reveal" style={`--reveal-delay:${i % 4}`}>
+              <a
+                href={`/services/${service.slug}`}
+                class="lift group block h-full border border-rule-gold/40 bg-ivory p-7"
+              >
+                <h3 class="text-h4 transition-colors group-hover:text-burgundy/70">
+                  {service.title}
+                </h3>
+                <p class="editorial mt-3 text-charcoal/70">{service.summary}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. Bestsellers -->
+  <section class="mx-auto max-w-7xl px-6 py-24">
+    <div class="reveal max-w-2xl">
+      <p class="label text-rule-gold">Our Shelf</p>
+      <h2 class="mt-5 text-h2">Look at our bestsellers</h2>
+      <p class="editorial mt-6 text-charcoal/75">
+        A sample of the books our authors have published.
+      </p>
+    </div>
+
+    <div class="mt-14">
+      <Bestsellers books={books} />
+    </div>
+  </section>
+
+  <!-- 9. Distribution -->
+  <section class="grained overflow-hidden bg-charcoal text-ivory">
+    <div class="mx-auto max-w-7xl px-6 py-16">
+      <div class="reveal text-center">
+        <p class="label text-rule-gold">Distribution</p>
+        <h2 class="mt-4 text-h3 text-ivory">Sell your book with</h2>
+      </div>
+
+      <ul class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-5">
+        {
+          RETAILERS.map((retailer) => (
+            <li class="editorial text-h4 text-ivory/45 transition-colors hover:text-gold">
+              {retailer}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 10. Process -->
+  <section class="mx-auto max-w-5xl px-6 py-24">
+    <div class="reveal max-w-2xl">
+      <p class="label text-rule-gold">How It Works</p>
+      <h2 class="mt-5 text-h2">The meticulous approach of TOME</h2>
+      <p class="editorial mt-6 text-charcoal/75">
+        Six stages, every one of them visible to you.
+      </p>
+    </div>
+
+    <ol class="mt-16 grid gap-x-12 gap-y-12 sm:grid-cols-2">
+      {
+        PROCESS_STEPS.map((step, i) => (
+          <li class="reveal border-t border-rule-gold/40 pt-6" style={`--reveal-delay:${i % 2}`}>
+            <p class="metadata text-label uppercase tracking-widest text-rule-gold">
+              Step {step.n}
+            </p>
+            <h3 class="mt-3 text-h4">{step.title}</h3>
+            <p class="editorial mt-3 text-charcoal/75">{step.body}</p>
           </li>
         ))
       }
     </ol>
 
-    <div class="reveal">
+    <div class="reveal mt-14">
       <a
         href="/process"
-        class="label lift mt-14 inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
+        class="label lift inline-block border border-burgundy px-8 py-4 text-burgundy hover:bg-burgundy hover:text-ivory"
       >
         The Full Process
       </a>
     </div>
   </section>
 
-  <!-- Testimonials -->
+  <!-- 11. Testimonials -->
   <section class="grained bg-burgundy text-ivory">
-    <div class="mx-auto max-w-6xl px-6 py-24">
-      <Ornament tone="dark" class="reveal mx-auto" />
+    <div class="mx-auto max-w-7xl px-6 py-24">
+      <div class="reveal text-center">
+        <p class="label text-rule-gold">Testimonials</p>
+        <h2 class="mt-4 text-h2 text-ivory">What our authors say</h2>
+        <Ornament tone="dark" class="mx-auto mt-8" />
+      </div>
 
-      <div class="mt-16 grid gap-14 md:grid-cols-2">
+      <ul class="mt-16 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
         {
-          testimonials.map((testimonial, i) => (
-            <figure class="reveal" style={`--reveal-delay:${i}`}>
-              <blockquote class="editorial border-l-2 border-rule-gold pl-6 text-h4 italic text-ivory/90">
-                {testimonial.quote}
-              </blockquote>
-              <figcaption class="mt-6 pl-6">
-                <span class="label block text-gold">{testimonial.name}</span>
-                <span class="editorial mt-1 block text-small text-ivory/55">
-                  {testimonial.book}
-                </span>
-              </figcaption>
-            </figure>
+          TESTIMONIALS.map((testimonial, i) => (
+            <li class="reveal" style={`--reveal-delay:${i % 3}`}>
+              <figure class="h-full border-l-2 border-rule-gold pl-6">
+                <blockquote class="editorial text-ivory/90">
+                  &ldquo;{testimonial.quote}&rdquo;
+                </blockquote>
+                <figcaption class="mt-5">
+                  <span class="label block text-gold">{testimonial.name}</span>
+                  <span class="editorial mt-1 block text-small text-ivory/55">
+                    {testimonial.role}
+                  </span>
+                </figcaption>
+              </figure>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
   </section>
 
-  <!-- Latest journal -->
-  {
-    latestPosts.length > 0 && (
-      <section class="mx-auto max-w-6xl px-6 py-24">
-        <div class="reveal flex flex-wrap items-baseline justify-between gap-4">
-          <h2 class="text-h2">From the Journal</h2>
-          <a href="/journal" class="label group text-burgundy">
-            <span class="link-sweep">All articles</span>
-            <span class="nudge ml-1" aria-hidden="true">
-              &rarr;
-            </span>
-          </a>
-        </div>
+  <!-- 12. FAQ -->
+  <section class="mx-auto max-w-3xl px-6 py-24">
+    <div class="reveal">
+      <p class="label text-rule-gold">Answers</p>
+      <h2 class="mt-5 text-h2">Frequently asked questions</h2>
+    </div>
 
-        <ul class="mt-14 grid gap-12 md:grid-cols-3">
-          {latestPosts.map((post, i) => (
-            <li class="reveal" style={`--reveal-delay:${i}`}>
-              <a href={`/journal/${post.id}`} class="group block">
-                <p class="metadata text-label uppercase tracking-wider text-charcoal/50">
-                  <span class="text-rule-gold">{post.data.category}</span>
-                  <span aria-hidden="true" class="mx-2 opacity-40">
-                    /
-                  </span>
-                  <time datetime={post.data.pubDate.toISOString()}>
-                    {formatDate(post.data.pubDate)}
-                  </time>
-                </p>
-                <h3 class="mt-3 text-h4 transition-colors group-hover:text-burgundy/70">
-                  {post.data.title}
-                </h3>
-                <p class="editorial mt-3 text-charcoal/75">{post.data.description}</p>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
+    <div class="reveal mt-12">
+      {
+        FAQS.map((faq) => (
+          <details class="group border-b border-charcoal/10 py-5">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-6 [&::-webkit-details-marker]:hidden">
+              <span class="editorial text-h4 text-burgundy">{faq.q}</span>
+              <span
+                aria-hidden="true"
+                class="mt-1.5 shrink-0 text-rule-gold transition-transform group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <p class="editorial mt-4 pr-10 text-charcoal/80">{faq.a}</p>
+          </details>
+        ))
+      }
+    </div>
 
-  <!-- Closing CTA -->
+    <p class="reveal mt-10 text-center">
+      <a href="/faq" class="label text-burgundy">
+        <span class="link-sweep">All questions</span>
+      </a>
+    </p>
+  </section>
+
+  <!-- 13. Closing CTA -->
   <section class="grained bg-burgundy text-ivory">
-    <div class="mx-auto max-w-3xl px-6 py-28 text-center">
-      <div class="reveal">
-        <h2 class="text-h2 text-ivory">Tell us about your book.</h2>
-        <Ornament tone="dark" class="mx-auto mt-8" />
-        <p class="editorial mt-8 text-ivory/75">
-          An editor reads every inquiry — properly, not as a queue — and replies
-          within two business days. There is no charge and no obligation.
-        </p>
-        <a
-          href="/inquiry"
-          class="label lift mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory"
-        >
-          Start Your Book
-        </a>
-      </div>
+    <div class="reveal mx-auto max-w-3xl px-6 py-28 text-center">
+      <h2 class="text-h2 text-ivory">Tell your story to the world</h2>
+      <Ornament tone="dark" class="mx-auto mt-8" />
+      <p class="editorial mt-8 text-ivory/75">
+        Leave us three details and we will come back with an honest read on your
+        book — scope, timeline and cost, before you commit to anything.
+      </p>
+      <a href="/inquiry" class="label lift mt-10 inline-block bg-gold px-10 py-4 text-burgundy hover:bg-ivory">
+        Let&rsquo;s start
+      </a>
+      <p class="metadata mt-6 text-small text-ivory/50">
+        No obligation, and no sales call unless you ask for one. We reply within one
+        business day.
+      </p>
     </div>
   </section>
 </Base>
