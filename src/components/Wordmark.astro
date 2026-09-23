@@ -18,8 +18,14 @@ interface Props {
 
 const { tone = 'dark', class: className = '', full = true } = Astro.props;
 
-const markColor = tone === 'dark' ? 'var(--color-gold)' : 'var(--color-burgundy)';
-const ruleColor = tone === 'dark' ? 'var(--color-rule-gold)' : 'var(--color-rule-gold)';
+/**
+ * On dark grounds the mark is filled with a gradient rather than flat gold, so
+ * it reads as stamped foil catching the light instead of a tan silhouette.
+ * The id is per-instance because the header and footer both render one.
+ */
+const gradientId = `wm-${tone}-${full ? 'full' : 'mark'}`;
+const markColor = tone === 'dark' ? `url(#${gradientId})` : 'var(--color-burgundy)';
+const ruleColor = 'var(--color-rule-gold)';
 ---
 
 <svg
@@ -29,6 +35,19 @@ const ruleColor = tone === 'dark' ? 'var(--color-rule-gold)' : 'var(--color-rule
   aria-label="TOME Publishers"
   xmlns="http://www.w3.org/2000/svg"
 >
+  {
+    tone === 'dark' && (
+      <defs>
+        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f3ddA6" />
+          <stop offset="42%" stop-color="var(--color-gold)" />
+          <stop offset="72%" stop-color="var(--color-rule-gold)" />
+          <stop offset="100%" stop-color="var(--color-gold)" />
+        </linearGradient>
+      </defs>
+    )
+  }
+
   <text
     x="160"
     y="46"

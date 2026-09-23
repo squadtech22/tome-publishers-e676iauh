@@ -80,7 +80,7 @@ const metaDescription = blurb ?? `${title} by ${author} — ${genre}, published 
           <div>
             <h1 class="text-ivory">{title}</h1>
             {subtitle && (
-              <p class="editorial mt-4 text-h4 italic text-gold/90">{subtitle}</p>
+              <p class="editorial mt-4 text-h4 italic text-gold">{subtitle}</p>
             )}
             <p class="editorial mt-6 text-h4 text-ivory/80">
               by <a
@@ -91,7 +91,7 @@ const metaDescription = blurb ?? `${title} by ${author} — ${genre}, published 
 
             {blurb && <p class="editorial mt-10 max-w-xl text-ivory/75">{blurb}</p>}
 
-            <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-rule-gold/30 pt-8 sm:grid-cols-3">
+            <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-rule-gold/70 pt-8 sm:grid-cols-3">
               {details.map(([term, value]) => (
                 <div>
                   <dt class="label text-rule-gold">{term}</dt>
@@ -120,7 +120,7 @@ const metaDescription = blurb ?? `${title} by ${author} — ${genre}, published 
 
   {related.length > 0 && (
     <section class="mx-auto max-w-6xl px-6 pb-24">
-      <h2 class="text-h3 border-t border-rule-gold/40 pt-14">More in {genre}</h2>
+      <h2 class="text-h3 border-t border-rule-gold/80 pt-14">More in {genre}</h2>
       <div class="mt-12">
         <BookGrid books={related} />
       </div>

@@ -56,12 +56,12 @@ const year = new Date().getFullYear();
           columns.map((column) => (
             <div>
               <h2 class="label text-rule-gold">{column.heading}</h2>
-              <ul class="mt-5 space-y-3">
+              <ul class="mt-4 space-y-1">
                 {column.links.map((link) => (
                   <li>
                     <a
                       href={link.href}
-                      class="editorial text-small text-ivory/70 hover:text-gold transition-colors"
+                      class="editorial inline-block py-1.5 text-small text-ivory/70 transition-colors hover:text-gold"
                     >
                       {link.label}
                     </a>

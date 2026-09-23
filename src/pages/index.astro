@@ -99,7 +99,7 @@ const jsonLd = {
           />
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute inset-0 border border-rule-gold/30"></span>
+            class="pointer-events-none absolute inset-0 border border-rule-gold/70"></span>
         </div>
       </div>
     </div>
@@ -109,7 +109,7 @@ const jsonLd = {
   <section class="bg-charcoal/[0.03]">
     <div class="mx-auto max-w-4xl px-6 py-24">
       <div class="reveal">
-        <p class="label text-rule-gold">Who We Are</p>
+        <p class="label text-burgundy/70">Who We Are</p>
         <h2 class="mt-5 text-h2">Expert book writers, to bring your literary vision to life</h2>
       </div>
 
@@ -179,7 +179,7 @@ const jsonLd = {
   <!-- 4. Services -->
   <section id="services" class="mx-auto max-w-7xl px-6 py-24">
     <div class="reveal max-w-3xl">
-      <p class="label text-rule-gold">What We Do</p>
+      <p class="label text-burgundy/70">What We Do</p>
       <h2 class="mt-5 text-h2">Join forces with skilled writers to share your story</h2>
       <p class="editorial mt-6 text-charcoal/75">
         Our writing and publishing specialists work on one book at a time, in the
@@ -191,11 +191,11 @@ const jsonLd = {
       {
         SERVICES.map((service, i) => (
           <li class="reveal" style={`--reveal-delay:${i % 4}`}>
-            <article class="group flex h-full flex-col border-t border-rule-gold/40 pt-6">
+            <article class="group flex h-full flex-col border-t border-rule-gold/80 pt-6">
               <h3 class="text-h4">{service.title}</h3>
               <p class="editorial mt-4 flex-1 text-charcoal/75">{service.summary}</p>
               <p class="label mt-6 text-burgundy">
-                <a href={`/services/${service.slug}`} class="link-sweep">
+                <a href={`/services/${service.slug}`} class="link-sweep inline-block py-2">
                   Explore
                 </a>
                 <span aria-hidden="true" class="nudge ml-1">
@@ -234,7 +234,7 @@ const jsonLd = {
   <!-- 6. Genres -->
   <section class="mx-auto max-w-7xl px-6 py-24">
     <div class="reveal max-w-3xl">
-      <p class="label text-rule-gold">What We Take On</p>
+      <p class="label text-burgundy/70">What We Take On</p>
       <h2 class="mt-5 text-h2">Genres our editors actually read</h2>
       <p class="editorial mt-6 text-charcoal/75">
         We match every book to someone who knows the shelf it belongs on — the
@@ -265,7 +265,7 @@ const jsonLd = {
   <section class="bg-charcoal/[0.03]">
     <div class="mx-auto max-w-7xl px-6 py-24">
       <div class="reveal max-w-2xl">
-        <p class="label text-rule-gold">And Also</p>
+        <p class="label text-burgundy/70">And Also</p>
         <h2 class="mt-5 text-h2">Unlock your book&rsquo;s full potential</h2>
         <p class="editorial mt-6 text-charcoal/75">
           The work that continues after publication day.
@@ -278,7 +278,7 @@ const jsonLd = {
             <li class="reveal" style={`--reveal-delay:${i % 4}`}>
               <a
                 href={`/services/${service.slug}`}
-                class="lift group block h-full border border-rule-gold/40 bg-ivory p-7"
+                class="lift group block h-full border border-rule-gold/80 bg-ivory p-7"
               >
                 <h3 class="text-h4 transition-colors group-hover:text-burgundy/70">
                   {service.title}
@@ -295,7 +295,7 @@ const jsonLd = {
   <!-- 8. Bestsellers -->
   <section class="mx-auto max-w-7xl px-6 py-24">
     <div class="reveal max-w-2xl">
-      <p class="label text-rule-gold">Our Shelf</p>
+      <p class="label text-burgundy/70">Our Shelf</p>
       <h2 class="mt-5 text-h2">Look at our bestsellers</h2>
       <p class="editorial mt-6 text-charcoal/75">
         A sample of the books our authors have published.
@@ -309,7 +309,7 @@ const jsonLd = {
 
   <!-- 9. Distribution -->
   <section class="grained overflow-hidden bg-charcoal text-ivory">
-    <div class="mx-auto max-w-7xl px-6 py-16">
+    <div class="mx-auto max-w-7xl px-6 py-20">
       <div class="reveal text-center">
         <p class="label text-rule-gold">Distribution</p>
         <h2 class="mt-4 text-h3 text-ivory">Sell your book with</h2>
@@ -330,7 +330,7 @@ const jsonLd = {
   <!-- 10. Process -->
   <section class="mx-auto max-w-5xl px-6 py-24">
     <div class="reveal max-w-2xl">
-      <p class="label text-rule-gold">How It Works</p>
+      <p class="label text-burgundy/70">How It Works</p>
       <h2 class="mt-5 text-h2">The meticulous approach of TOME</h2>
       <p class="editorial mt-6 text-charcoal/75">
         Six stages, every one of them visible to you.
@@ -340,8 +340,8 @@ const jsonLd = {
     <ol class="mt-16 grid gap-x-12 gap-y-12 sm:grid-cols-2">
       {
         PROCESS_STEPS.map((step, i) => (
-          <li class="reveal border-t border-rule-gold/40 pt-6" style={`--reveal-delay:${i % 2}`}>
-            <p class="metadata text-label uppercase tracking-widest text-rule-gold">
+          <li class="reveal border-t border-rule-gold/80 pt-6" style={`--reveal-delay:${i % 2}`}>
+            <p class="metadata text-label uppercase tracking-widest text-burgundy/70">
               Step {step.n}
             </p>
             <h3 class="mt-3 text-h4">{step.title}</h3>
@@ -395,7 +395,7 @@ const jsonLd = {
   <!-- 12. FAQ -->
   <section class="mx-auto max-w-3xl px-6 py-24">
     <div class="reveal">
-      <p class="label text-rule-gold">Answers</p>
+      <p class="label text-burgundy/70">Answers</p>
       <h2 class="mt-5 text-h2">Frequently asked questions</h2>
     </div>
 
@@ -407,7 +407,7 @@ const jsonLd = {
               <span class="editorial text-h4 text-burgundy">{faq.q}</span>
               <span
                 aria-hidden="true"
-                class="mt-1.5 shrink-0 text-rule-gold transition-transform group-open:rotate-45"
+                class="mt-1.5 shrink-0 text-burgundy/60 transition-transform group-open:rotate-45"
               >
                 +
               </span>
@@ -419,7 +419,7 @@ const jsonLd = {
     </div>
 
     <p class="reveal mt-10 text-center">
-      <a href="/faq" class="label text-burgundy">
+      <a href="/faq" class="label inline-block px-4 py-3 text-burgundy">
         <span class="link-sweep">All questions</span>
       </a>
     </p>
@@ -427,7 +427,7 @@ const jsonLd = {
 
   <!-- 13. Closing CTA -->
   <section class="grained bg-burgundy text-ivory">
-    <div class="reveal mx-auto max-w-3xl px-6 py-28 text-center">
+    <div class="reveal mx-auto max-w-3xl px-6 py-24 text-center">
       <h2 class="text-h2 text-ivory">Tell your story to the world</h2>
       <Ornament tone="dark" class="mx-auto mt-8" />
       <p class="editorial mt-8 text-ivory/75">

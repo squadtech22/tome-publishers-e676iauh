@@ -18,7 +18,8 @@ const linkBase =
 ---
 
 <header class="grained relative z-50 bg-burgundy text-ivory">
-  <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-rule-gold/25"></span>
+  {/* Full-strength at 1px reads as foil edging; faded, it reads as brown. */}
+  <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-rule-gold"></span>
 
   <div class="mx-auto max-w-7xl px-6">
     <div class="flex items-center justify-between gap-6 py-5">
@@ -64,7 +65,7 @@ const linkBase =
               class="invisible absolute right-0 top-full z-50 w-[34rem] pt-4 opacity-0 transition-opacity duration-200"
             >
               <ul
-                class="grid grid-cols-2 gap-x-6 gap-y-1 border border-rule-gold/30 bg-burgundy p-6 shadow-2xl"
+                class="grid grid-cols-2 gap-x-6 gap-y-1 border border-rule-gold/70 bg-burgundy p-6 shadow-2xl"
               >
                 {
                   dropdown.map((service) => (
@@ -112,31 +113,51 @@ const linkBase =
         </summary>
         <nav
           aria-label="Primary"
-          class="absolute right-0 top-full z-50 mt-2 max-h-[70vh] w-72 overflow-y-auto border border-rule-gold/40 bg-burgundy p-6 shadow-2xl"
+          class="absolute right-0 top-full z-50 mt-2 max-h-[70vh] w-72 overflow-y-auto border border-rule-gold/80 bg-burgundy p-6 shadow-2xl"
         >
-          <p class="nav-label mb-3 text-rule-gold">Services</p>
-          <ul class="mb-5 space-y-2.5">
-            {
-              [...SERVICES, ...SPECIALIST_SERVICES, ...ADDITIONAL_SERVICES].map((service) => (
-                <li>
-                  <a
-                    href={`/services/${service.slug}`}
-                    class="editorial text-small text-ivory/80 hover:text-gold"
-                  >
-                    {service.title}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
+          {/*
+            Services are nested behind their own disclosure so the menu opens
+            as six items rather than a twenty-three item wall. Every target is
+            padded to ~44px for touch.
+          */}
+          <details class="group/svc border-b border-rule-gold/70 pb-2">
+            <summary
+              class="nav-label flex cursor-pointer list-none items-center justify-between py-3 text-ivory/85 hover:text-gold [&::-webkit-details-marker]:hidden"
+            >
+              Services
+              <span
+                aria-hidden="true"
+                class="text-[0.6em] transition-transform group-open/svc:rotate-180">&#9660;</span
+              >
+            </summary>
+            <ul class="mb-2">
+              {
+                [...SERVICES, ...SPECIALIST_SERVICES, ...ADDITIONAL_SERVICES].map((service) => (
+                  <li>
+                    <a
+                      href={`/services/${service.slug}`}
+                      class="editorial block py-3 pl-3 text-small text-ivory/75 hover:text-gold"
+                    >
+                      {service.title}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
 
-          <div class="space-y-2.5 border-t border-rule-gold/30 pt-5">
-            <a href="/books" class="nav-label block text-ivory/85 hover:text-gold">Books</a>
-            <a href="/authors" class="nav-label block text-ivory/85 hover:text-gold">Authors</a>
-            <a href="/journal" class="nav-label block text-ivory/85 hover:text-gold">Journal</a>
-            <a href="/about" class="nav-label block text-ivory/85 hover:text-gold">About</a>
-            <a href="/contact" class="nav-label block text-ivory/85 hover:text-gold">Contact</a>
-            <a href="/inquiry" class="nav-label block pt-2 text-gold">Get Started</a>
+          <div class="mt-2">
+            <a href="/books" class="nav-label block py-3 text-ivory/85 hover:text-gold">Books</a>
+            <a href="/authors" class="nav-label block py-3 text-ivory/85 hover:text-gold">Authors</a>
+            <a href="/journal" class="nav-label block py-3 text-ivory/85 hover:text-gold">Journal</a>
+            <a href="/about" class="nav-label block py-3 text-ivory/85 hover:text-gold">About</a>
+            <a href="/contact" class="nav-label block py-3 text-ivory/85 hover:text-gold">Contact</a>
+            <a
+              href="/inquiry"
+              class="nav-label mt-3 block bg-gold px-5 py-3.5 text-center text-burgundy"
+            >
+              Get Started
+            </a>
           </div>
         </nav>
       </details>

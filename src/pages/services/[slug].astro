@@ -42,7 +42,7 @@ const jsonLd = {
       <h1 class="text-ivory">{service.title}</h1>
       <Ornament tone="dark" class="mt-8 !w-[120px] !justify-start" />
 
-      <p class="editorial mt-8 max-w-2xl text-h4 text-gold/90">{service.summary}</p>
+      <p class="editorial mt-8 max-w-2xl text-h4 text-gold">{service.summary}</p>
 
       <div class="mt-12 flex flex-wrap gap-4">
         <a href="/inquiry" class="label lift bg-gold px-8 py-4 text-burgundy hover:bg-ivory">
@@ -79,15 +79,15 @@ const jsonLd = {
   <section class="bg-charcoal/[0.03]">
     <div class="mx-auto max-w-5xl px-6 py-20">
       <div class="reveal max-w-2xl">
-        <p class="label text-rule-gold">How It Works</p>
+        <p class="label text-burgundy/70">How It Works</p>
         <h2 class="mt-4 text-h3">Six stages, every one visible to you</h2>
       </div>
 
       <ol class="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
         {
           PROCESS_STEPS.map((step, i) => (
-            <li class="reveal border-t border-rule-gold/40 pt-5" style={`--reveal-delay:${i % 3}`}>
-              <p class="metadata text-label uppercase tracking-widest text-rule-gold">
+            <li class="reveal border-t border-rule-gold/80 pt-5" style={`--reveal-delay:${i % 3}`}>
+              <p class="metadata text-label uppercase tracking-widest text-burgundy/70">
                 Step {step.n}
               </p>
               <h3 class="mt-2 text-h4">{step.title}</h3>
@@ -109,7 +109,7 @@ const jsonLd = {
               <span class="editorial text-h4 text-burgundy transition-opacity group-hover:opacity-70">
                 {other.title}
               </span>
-              <span aria-hidden="true" class="nudge ml-1 text-rule-gold">
+              <span aria-hidden="true" class="nudge ml-1 text-burgundy/60">
                 &rarr;
               </span>
             </a>

@@ -1,5 +1,12 @@
 ---
-/** Gold rule-and-diamond divider, echoing the wordmark lockup. */
+/**
+ * Gold rule-and-diamond divider, echoing the wordmark lockup.
+ *
+ * The rules are a gradient rather than a flat tint: brightest where they meet
+ * the diamond, fading at the outer ends. Flat low-opacity gold over a dark
+ * ground just interpolates toward the ground and reads brown — a gradient
+ * gives the line the sheen of stamped foil while keeping the ends delicate.
+ */
 interface Props {
   tone?: 'dark' | 'light';
   class?: string;
@@ -9,21 +16,36 @@ interface Props {
 
 const { tone = 'light', class: className = '', width = 'short' } = Astro.props;
 
-const stroke = tone === 'dark' ? 'var(--color-rule-gold)' : 'var(--color-rule-gold)';
-const opacity = tone === 'dark' ? 0.75 : 0.6;
+// Antique Gold catches the light; Muted Gold is the shadowed end of the sweep.
+const bright = 'var(--color-gold)';
+const deep = 'var(--color-rule-gold)';
+
+const fadeLeft = `linear-gradient(to right, transparent, ${deep} 45%, ${bright})`;
+const fadeRight = `linear-gradient(to left, transparent, ${deep} 45%, ${bright})`;
 ---
 
-<div class={`flex items-center justify-center ${width === 'full' ? 'w-full' : 'w-[180px]'} ${className}`}>
-  <span class="h-px flex-1" style={`background:${stroke};opacity:${opacity}`}></span>
+<div
+  class={`flex items-center justify-center ${width === 'full' ? 'w-full' : 'w-[180px]'} ${className}`}
+>
+  <span class="h-px flex-1" style={`background-image:${fadeLeft}`}></span>
+
   <svg
-    width="11"
-    height="11"
-    viewBox="0 0 11 11"
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
     aria-hidden="true"
     class="mx-3 shrink-0"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M5.5 0 L11 5.5 L5.5 11 L0 5.5 Z" fill={stroke} opacity={opacity + 0.2} />
+    <defs>
+      <linearGradient id={`orn-${tone}`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="var(--color-gold)" />
+        <stop offset="55%" stop-color="var(--color-rule-gold)" />
+        <stop offset="100%" stop-color="var(--color-gold)" />
+      </linearGradient>
+    </defs>
+    <path d="M6 0 L12 6 L6 12 L0 6 Z" fill={`url(#orn-${tone})`} />
   </svg>
-  <span class="h-px flex-1" style={`background:${stroke};opacity:${opacity}`}></span>
+
+  <span class="h-px flex-1" style={`background-image:${fadeRight}`}></span>
 </div>

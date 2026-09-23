@@ -31,7 +31,7 @@ const genres = [...new Set(books.map((b) => b.data.genre))].sort();
               type="button"
               data-filter={toSlug(genre)}
               aria-pressed="false"
-              class="filter-btn label border border-rule-gold/50 px-4 py-2 text-charcoal/70 transition-colors hover:border-burgundy hover:text-burgundy"
+              class="filter-btn label border border-rule-gold/90 px-4 py-2 text-charcoal/70 transition-colors hover:border-burgundy hover:text-burgundy"
             >
               {genre}
             </button>
@@ -54,10 +54,10 @@ const genres = [...new Set(books.map((b) => b.data.genre))].sort();
             />
 
             <p class="metadata mt-5 flex items-center justify-between gap-3 text-label uppercase tracking-wider text-charcoal/50">
-              <span class="text-rule-gold">{book.data.genre}</span>
+              <span class="text-burgundy/70">{book.data.genre}</span>
               {book.data.rating && (
                 <span class="shrink-0 text-charcoal/60">
-                  <span aria-hidden="true" class="text-rule-gold">
+                  <span aria-hidden="true" class="text-burgundy/60">
                     &#9733;
                   </span>
                   <span class="sr-only">Rated</span>
@@ -93,7 +93,7 @@ const genres = [...new Set(books.map((b) => b.data.genre))].sort();
     const cards = root.querySelectorAll<HTMLElement>('.book-card');
 
     const active = 'border-burgundy bg-burgundy text-ivory';
-    const idle = 'border-rule-gold/50 text-charcoal/70 hover:border-burgundy hover:text-burgundy';
+    const idle = 'border-rule-gold/90 text-charcoal/70 hover:border-burgundy hover:text-burgundy';
 
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
