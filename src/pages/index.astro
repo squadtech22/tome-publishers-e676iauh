@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import Ornament from '~/components/Ornament.astro';
 import Bestsellers from '~/components/Bestsellers.astro';
-import heroSpines from '~/assets/generated/hero-spines.png';
+import heroSpines from '~/assets/generated/hero-spines2.png';
 import { getBooks } from '~/lib/content';
 import {
   SERVICES,
@@ -42,7 +42,7 @@ const jsonLd = {
       class="mx-auto grid max-w-7xl gap-16 px-6 py-24 md:py-32 lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
     >
       <div class="reveal">
-        <p class="label text-rule-gold">Ghostwriting &middot; Editing &middot; Publishing</p>
+        <p class="label text-gold">Ghostwriting &middot; Editing &middot; Publishing</p>
         <Ornament tone="dark" class="mt-5 !w-[120px] !justify-start" />
 
         <h1 class="mt-8 text-ivory">
@@ -56,7 +56,7 @@ const jsonLd = {
         </p>
 
         <div class="mt-10 border-l-2 border-rule-gold pl-6">
-          <p class="label mb-4 text-rule-gold">Here&rsquo;s what&rsquo;s in store</p>
+          <p class="label mb-4 text-gold">Here&rsquo;s what&rsquo;s in store</p>
           <ul class="editorial space-y-2.5 text-ivory/85">
             {
               HERO_PROMISES.map((promise) => (
@@ -82,7 +82,7 @@ const jsonLd = {
         </div>
 
         <p class="metadata mt-8 text-small text-ivory/55">
-          <span aria-hidden="true" class="mr-2 text-rule-gold">&#9670;</span>
+          <span aria-hidden="true" class="mr-2 text-gold">&#9670;</span>
           Authors keep 100% of royalties
         </p>
       </div>
@@ -94,12 +94,10 @@ const jsonLd = {
             alt="A shelf of clothbound books in burgundy and charcoal, tooled with gold bands"
             widths={[440, 660, 900]}
             sizes="(max-width: 1024px) 0px, 440px"
-            class="w-full shadow-[0_30px_60px_-25px_rgb(0_0_0/0.7)]"
+            class="w-[92%] scale-125"
             loading="eager"
           />
-          <span
-            aria-hidden="true"
-            class="pointer-events-none absolute inset-0 border border-rule-gold/70"></span>
+         
         </div>
       </div>
     </div>
@@ -152,7 +150,7 @@ const jsonLd = {
   <section class="grained bg-charcoal text-ivory">
     <div class="mx-auto max-w-5xl px-6 py-20 text-center">
       <div class="reveal">
-        <p class="label text-rule-gold">By the Numbers</p>
+        <p class="label text-gold">By the Numbers</p>
         <h2 class="mt-4 text-h3 text-ivory">A team that has done this before</h2>
         <p class="editorial mx-auto mt-5 max-w-xl text-ivory/70">
           Editors, designers and production staff who work on books full time — not a
@@ -191,7 +189,7 @@ const jsonLd = {
       {
         SERVICES.map((service, i) => (
           <li class="reveal" style={`--reveal-delay:${i % 4}`}>
-            <article class="group flex h-full flex-col border-t border-rule-gold/80 pt-6">
+            <article class="group flex h-full flex-col border-t border-rule-warm/80 pt-6">
               <h3 class="text-h4">{service.title}</h3>
               <p class="editorial mt-4 flex-1 text-charcoal/75">{service.summary}</p>
               <p class="label mt-6 text-burgundy">
@@ -246,7 +244,7 @@ const jsonLd = {
       {
         GENRE_GROUPS.map((group) => (
           <div class="reveal">
-            <h3 class="label border-b border-rule-gold pb-3 text-burgundy">{group.heading}</h3>
+            <h3 class="label border-b border-rule-warm pb-3 text-burgundy">{group.heading}</h3>
             <dl class="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
               {group.items.map(([term, detail]) => (
                 <div>
@@ -311,7 +309,7 @@ const jsonLd = {
   <section class="grained overflow-hidden bg-charcoal text-ivory">
     <div class="mx-auto max-w-7xl px-6 py-20">
       <div class="reveal text-center">
-        <p class="label text-rule-gold">Distribution</p>
+        <p class="label text-gold">Distribution</p>
         <h2 class="mt-4 text-h3 text-ivory">Sell your book with</h2>
       </div>
 
@@ -340,7 +338,7 @@ const jsonLd = {
     <ol class="mt-16 grid gap-x-12 gap-y-12 sm:grid-cols-2">
       {
         PROCESS_STEPS.map((step, i) => (
-          <li class="reveal border-t border-rule-gold/80 pt-6" style={`--reveal-delay:${i % 2}`}>
+          <li class="reveal border-t border-rule-warm/80 pt-6" style={`--reveal-delay:${i % 2}`}>
             <p class="metadata text-label uppercase tracking-widest text-burgundy/70">
               Step {step.n}
             </p>
@@ -365,7 +363,7 @@ const jsonLd = {
   <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-7xl px-6 py-24">
       <div class="reveal text-center">
-        <p class="label text-rule-gold">Testimonials</p>
+        <p class="label text-gold">Testimonials</p>
         <h2 class="mt-4 text-h2 text-ivory">What our authors say</h2>
         <Ornament tone="dark" class="mx-auto mt-8" />
       </div>

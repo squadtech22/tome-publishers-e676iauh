@@ -35,7 +35,7 @@ const jsonLd = {
 
   <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-4xl px-6 py-24">
-      <nav aria-label="Breadcrumb" class="label mb-8 text-rule-gold">
+      <nav aria-label="Breadcrumb" class="label mb-8 text-gold">
         <a href="/#services" class="link-sweep hover:text-gold">Services</a>
       </nav>
 
@@ -62,7 +62,7 @@ const jsonLd = {
     <p class="reveal editorial text-h4 text-charcoal/85">{service.body}</p>
 
     <div class="reveal mt-14">
-      <h2 class="label border-b border-rule-gold pb-3 text-burgundy">What&rsquo;s included</h2>
+      <h2 class="label border-b border-rule-warm pb-3 text-burgundy">What&rsquo;s included</h2>
       <ul class="mt-8 space-y-4">
         {
           service.includes.map((item) => (
@@ -86,7 +86,7 @@ const jsonLd = {
       <ol class="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
         {
           PROCESS_STEPS.map((step, i) => (
-            <li class="reveal border-t border-rule-gold/80 pt-5" style={`--reveal-delay:${i % 3}`}>
+            <li class="reveal border-t border-rule-warm/80 pt-5" style={`--reveal-delay:${i % 3}`}>
               <p class="metadata text-label uppercase tracking-widest text-burgundy/70">
                 Step {step.n}
               </p>
@@ -100,7 +100,7 @@ const jsonLd = {
   </section>
 
   <section class="mx-auto max-w-5xl px-6 py-20">
-    <h2 class="reveal label border-b border-rule-gold pb-3 text-burgundy">Other services</h2>
+    <h2 class="reveal label border-b border-rule-warm pb-3 text-burgundy">Other services</h2>
     <ul class="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
       {
         others.map((other) => (

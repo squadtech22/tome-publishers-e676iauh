@@ -55,7 +55,7 @@ const year = new Date().getFullYear();
         {
           columns.map((column) => (
             <div>
-              <h2 class="label text-rule-gold">{column.heading}</h2>
+              <h2 class="label text-gold">{column.heading}</h2>
               <ul class="mt-4 space-y-1">
                 {column.links.map((link) => (
                   <li>
@@ -82,11 +82,11 @@ const year = new Date().getFullYear();
           pillars.map((pillar, i) => (
             <>
               {i > 0 && (
-                <li aria-hidden="true" class="text-rule-gold">
+                <li aria-hidden="true" class="text-gold">
                   &middot;
                 </li>
               )}
-              <li class="label text-rule-gold">{pillar}</li>
+              <li class="label text-gold">{pillar}</li>
             </>
           ))
         }

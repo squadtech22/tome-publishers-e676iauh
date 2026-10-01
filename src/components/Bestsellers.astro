@@ -31,7 +31,7 @@ const genres = [...new Set(books.map((b) => b.data.genre))].sort();
               type="button"
               data-filter={toSlug(genre)}
               aria-pressed="false"
-              class="filter-btn label border border-rule-gold/90 px-4 py-2 text-charcoal/70 transition-colors hover:border-burgundy hover:text-burgundy"
+              class="filter-btn label border border-rule-warm/90 px-4 py-2 text-charcoal/70 transition-colors hover:border-burgundy hover:text-burgundy"
             >
               {genre}
             </button>
@@ -93,7 +93,7 @@ const genres = [...new Set(books.map((b) => b.data.genre))].sort();
     const cards = root.querySelectorAll<HTMLElement>('.book-card');
 
     const active = 'border-burgundy bg-burgundy text-ivory';
-    const idle = 'border-rule-gold/90 text-charcoal/70 hover:border-burgundy hover:text-burgundy';
+    const idle = 'border-rule-warm/90 text-charcoal/70 hover:border-burgundy hover:text-burgundy';
 
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {

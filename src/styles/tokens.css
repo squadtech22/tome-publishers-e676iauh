@@ -8,18 +8,29 @@
 @theme {
   /* --- Colour ---------------------------------------------------
      Contrast notes (WCAG AA, normal text needs 4.5:1):
-       antique-gold on burgundy ....... ~9.0:1  PASS
-       ivory       on burgundy ....... ~15.4:1  PASS
-       charcoal    on ivory .......... ~14.9:1  PASS
-       burgundy    on ivory .......... ~15.2:1  PASS
-       muted-gold  on ivory ..........  ~2.0:1  FAIL — decorative only
-     `muted-gold` is deliberately named `--color-rule-gold` so it reads
-     as a rule/divider colour and is awkward to reach for as body text. */
+       gold       on burgundy ........ ~12.7:1  PASS
+       gold       on charcoal ........ ~12.0:1  PASS
+       ivory      on burgundy ........ ~15.4:1  PASS
+       charcoal   on ivory ........... ~14.9:1  PASS
+       burgundy   on ivory ........... ~15.2:1  PASS
+       any gold   on ivory ........... under 2:1  FAIL — never text on light
+     Gold is for DARK grounds only. On ivory, text is burgundy or charcoal
+     and rules use --color-rule-warm. The `rule` names mark those tokens as
+     dividers so they are awkward to reach for as body text. */
   --color-burgundy: #2b0f14;
   --color-charcoal: #201c1d;
   --color-ivory: #f5f0e6;
-  --color-gold: #e8c77a;        /* Antique Gold — safe for text on dark */
-  --color-rule-gold: #c9a45e;   /* Muted Gold — rules, dividers, decorative numerals */
+  /* Brightened from the original board values (#E8C77A / #C9A45E) on request:
+     both read dull against burgundy. Hue and role are unchanged, luminance
+     and chroma are raised so the gold actually catches light. */
+  --color-gold: #f7d77e;
+  /* Antique Gold — text and accents on DARK */
+  --color-rule-gold: #e3bc63;
+  /* Muted Gold — rules and dividers on DARK */
+  /* Rules on LIGHT grounds keep the original, deeper gold. Brightening a
+     hairline on ivory makes it vanish (1.59:1 vs 2.06:1), so the two grounds
+     need different values — same hue family, different luminance. */
+  --color-rule-warm: #c9a45e;
 
   /* --- Type families -------------------------------------------
      Rockwell is licensed and NOT loaded as a webfont; the wordmark
@@ -31,13 +42,20 @@
   --font-body: "Inter Variable", "Inter", system-ui, sans-serif;
 
   /* --- Type scale (fluid, clamped to the brand board's ranges) --- */
-  --text-h1: clamp(3.25rem, 1.6rem + 4.6vw, 5rem);        /* 52 → 80 */
-  --text-h2: clamp(2.25rem, 1.4rem + 2.4vw, 3.5rem);      /* 36 → 56 */
-  --text-h3: clamp(1.75rem, 1.4rem + 1.0vw, 2.25rem);     /* 28 → 36 */
-  --text-h4: clamp(1.25rem, 1.1rem + 0.5vw, 1.625rem);    /* 20 → 26 */
-  --text-body: clamp(1.0625rem, 1.0rem + 0.2vw, 1.1875rem); /* 17 → 19 */
-  --text-small: clamp(0.8125rem, 0.78rem + 0.1vw, 0.9375rem); /* 13 → 15 */
-  --text-label: clamp(0.6875rem, 0.66rem + 0.1vw, 0.8125rem);  /* 11 → 13 */
+  --text-h1: clamp(3.25rem, 1.6rem + 4.6vw, 5rem);
+  /* 52 → 80 */
+  --text-h2: clamp(2.25rem, 1.4rem + 2.4vw, 3.5rem);
+  /* 36 → 56 */
+  --text-h3: clamp(1.75rem, 1.4rem + 1.0vw, 2.25rem);
+  /* 28 → 36 */
+  --text-h4: clamp(1.25rem, 1.1rem + 0.5vw, 1.625rem);
+  /* 20 → 26 */
+  --text-body: clamp(1.0625rem, 1.0rem + 0.2vw, 1.1875rem);
+  /* 17 → 19 */
+  --text-small: clamp(0.8125rem, 0.78rem + 0.1vw, 0.9375rem);
+  /* 13 → 15 */
+  --text-label: clamp(0.6875rem, 0.66rem + 0.1vw, 0.8125rem);
+  /* 11 → 13 */
 }
 
 /* --- Base ------------------------------------------------------- */
@@ -49,8 +67,13 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -66,7 +89,9 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-display);
     font-weight: 600;
     line-height: 1.1;
@@ -74,24 +99,49 @@
     color: var(--color-burgundy);
   }
 
-  h4, h5, h6 {
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-body);
     font-weight: 600;
     line-height: 1.25;
     color: var(--color-burgundy);
   }
 
-  h1 { font-size: var(--text-h1); }
-  h2 { font-size: var(--text-h2); }
-  h3 { font-size: var(--text-h3); }
-  h4 { font-size: var(--text-h4); }
+  h1 {
+    font-size: var(--text-h1);
+  }
 
-  p { text-wrap: pretty; }
+  h2 {
+    font-size: var(--text-h2);
+  }
 
+  h3 {
+    font-size: var(--text-h3);
+  }
+
+  h4 {
+    font-size: var(--text-h4);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus rings need 3:1 against what surrounds them. Gold on ivory is
+     1.23:1, so burgundy is the default and gold is used only inside dark
+     sections, where burgundy would disappear instead. */
   :focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-burgundy);
     outline-offset: 3px;
     border-radius: 2px;
+  }
+
+  .bg-burgundy :focus-visible,
+  .bg-charcoal :focus-visible,
+  .bg-burgundy:focus-visible,
+  .bg-charcoal:focus-visible {
+    outline-color: var(--color-gold);
   }
 }
 
@@ -130,7 +180,9 @@
     color: var(--color-charcoal);
   }
 
-  .prose-tome > * + * { margin-top: 1.35em; }
+  .prose-tome>*+* {
+    margin-top: 1.35em;
+  }
 
   .prose-tome h2 {
     font-size: var(--text-h3);
@@ -148,15 +200,19 @@
     color: var(--color-burgundy);
     text-decoration: underline;
     text-underline-offset: 3px;
-    text-decoration-color: var(--color-rule-gold);
+    text-decoration-color: var(--color-rule-warm);
   }
 
-  .prose-tome a:hover { text-decoration-thickness: 2px; }
+  .prose-tome a:hover {
+    text-decoration-thickness: 2px;
+  }
 
-  .prose-tome strong { font-weight: 600; }
+  .prose-tome strong {
+    font-weight: 600;
+  }
 
   .prose-tome blockquote {
-    border-left: 3px solid var(--color-rule-gold);
+    border-left: 3px solid var(--color-rule-warm);
     padding-left: 1.5rem;
     margin-left: 0;
     font-style: italic;
@@ -170,14 +226,25 @@
     padding-left: 1.4rem;
   }
 
-  .prose-tome ul { list-style: disc; }
-  .prose-tome ol { list-style: decimal; }
-  .prose-tome li::marker { color: var(--color-rule-gold); }
-  .prose-tome li + li { margin-top: 0.5em; }
+  .prose-tome ul {
+    list-style: disc;
+  }
+
+  .prose-tome ol {
+    list-style: decimal;
+  }
+
+  .prose-tome li::marker {
+    color: var(--color-rule-warm);
+  }
+
+  .prose-tome li+li {
+    margin-top: 0.5em;
+  }
 
   .prose-tome hr {
     border: 0;
-    border-top: 1px solid var(--color-rule-gold);
+    border-top: 1px solid var(--color-rule-warm);
     opacity: 0.5;
     margin: 3em 0;
   }
@@ -212,11 +279,14 @@
   .prose-tome code {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.9em;
-    background: color-mix(in srgb, var(--color-rule-gold) 18%, transparent);
+    background: color-mix(in srgb, var(--color-rule-warm) 18%, transparent);
     padding: 0.15em 0.4em;
   }
 
-  .prose-tome img { max-width: 100%; height: auto; }
+  .prose-tome img {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 /* --- Texture ----------------------------------------------------
@@ -263,6 +333,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+
     .js .reveal,
     .js .reveal.is-visible {
       opacity: 1;
@@ -275,6 +346,7 @@
 /* --- Interaction polish ------------------------------------------ */
 
 @layer components {
+
   /* Gold rule that draws itself in from the left on hover. */
   .link-sweep {
     background-image: linear-gradient(currentColor, currentColor);
@@ -325,12 +397,14 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+
     .lift,
     .nudge,
     .cover-hover,
     .link-sweep {
       transition: none;
     }
+
     .lift:hover,
     .group:hover .cover-hover {
       transform: none;

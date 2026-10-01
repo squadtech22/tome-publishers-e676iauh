@@ -39,7 +39,7 @@ const jsonLd = {
 
   <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-4xl px-6 py-20">
-      <nav aria-label="Breadcrumb" class="label mb-10 text-rule-gold">
+      <nav aria-label="Breadcrumb" class="label mb-10 text-gold">
         <a href="/authors" class="link-sweep hover:text-gold">Authors</a>
       </nav>
 
@@ -55,7 +55,7 @@ const jsonLd = {
 
           {
             (profile?.data.role || profile?.data.location) && (
-              <p class="metadata mt-4 text-label uppercase tracking-wider text-rule-gold">
+              <p class="metadata mt-4 text-label uppercase tracking-wider text-gold">
                 {[profile?.data.role, profile?.data.location].filter(Boolean).join(' · ')}
               </p>
             )

@@ -14,17 +14,16 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
 const dropdownCurrent = dropdown.some((s) => isCurrent(`/services/${s.slug}`));
 
 const linkBase =
-  'nav-label text-ivory/85 transition-colors hover:text-gold aria-[current=page]:text-gold';
+  'nav-label font-black text-burgundy/80 transition-colors hover:text-burgundy hover:underline hover:underline-offset-8 hover:decoration-2 aria-[current=page]:text-burgundy aria-[current=page]:underline aria-[current=page]:underline-offset-8 aria-[current=page]:decoration-2';
 ---
 
-<header class="grained relative z-50 bg-burgundy text-ivory">
-  {/* Full-strength at 1px reads as foil edging; faded, it reads as brown. */}
-  <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-rule-gold"></span>
+<header class="relative z-50 bg-ivory text-burgundy">
+  <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-px bg-burgundy/25"></span>
 
   <div class="mx-auto max-w-7xl px-6">
     <div class="flex items-center justify-between gap-6 py-5">
-      <a href="/" aria-label="TOME Publishers — home" class="shrink-0">
-        <Wordmark tone="dark" full={false} class="h-9 w-auto" />
+      <a href="/" aria-label="TOME Publishers — home" class="flex shrink-0 items-center">
+        <Wordmark tone="light" class="h-12 w-auto" />
       </a>
 
       <nav aria-label="Primary" class="hidden xl:block">
@@ -49,7 +48,7 @@ const linkBase =
               data-dropdown-trigger
               aria-expanded="false"
               aria-controls="services-menu"
-              class={`${linkBase} flex items-center gap-1.5 ${dropdownCurrent ? 'text-gold' : ''}`}
+              class={`${linkBase} flex items-center gap-1.5 ${dropdownCurrent ? 'text-burgundy underline underline-offset-8 decoration-2' : ''}`}
             >
               Other Services
               <span
@@ -65,7 +64,7 @@ const linkBase =
               class="invisible absolute right-0 top-full z-50 w-[34rem] pt-4 opacity-0 transition-opacity duration-200"
             >
               <ul
-                class="grid grid-cols-2 gap-x-6 gap-y-1 border border-rule-gold/70 bg-burgundy p-6 shadow-2xl"
+                class="grid grid-cols-2 gap-x-6 gap-y-1 border border-burgundy/20 bg-ivory p-6 shadow-2xl"
               >
                 {
                   dropdown.map((service) => (
@@ -73,7 +72,7 @@ const linkBase =
                       <a
                         href={`/services/${service.slug}`}
                         aria-current={isCurrent(`/services/${service.slug}`) ? 'page' : undefined}
-                        class="editorial block py-1.5 text-small text-ivory/75 transition-colors hover:text-gold aria-[current=page]:text-gold"
+                        class="editorial font-black block py-1.5 text-small text-burgundy/75 transition-colors hover:text-burgundy aria-[current=page]:text-burgundy"
                       >
                         {service.title}
                       </a>
@@ -97,7 +96,7 @@ const linkBase =
           <li>
             <a
               href="/inquiry"
-              class="nav-label lift inline-block bg-gold px-5 py-3 text-burgundy hover:bg-ivory"
+              class="nav-label font-black lift inline-block border border-burgundy bg-transparent px-5 py-3 text-burgundy hover:bg-burgundy hover:text-ivory transition-colors duration-300"
             >
               Get Started
             </a>
@@ -107,22 +106,22 @@ const linkBase =
 
       <details class="relative xl:hidden">
         <summary
-          class="nav-label cursor-pointer list-none py-2 text-gold [&::-webkit-details-marker]:hidden"
+          class="nav-label font-black cursor-pointer list-none py-2 text-burgundy [&::-webkit-details-marker]:hidden"
         >
           Menu
         </summary>
         <nav
           aria-label="Primary"
-          class="absolute right-0 top-full z-50 mt-2 max-h-[70vh] w-72 overflow-y-auto border border-rule-gold/80 bg-burgundy p-6 shadow-2xl"
+          class="absolute right-0 top-full z-50 mt-2 max-h-[70vh] w-72 overflow-y-auto border border-burgundy/20 bg-ivory p-6 shadow-2xl"
         >
           {/*
             Services are nested behind their own disclosure so the menu opens
             as six items rather than a twenty-three item wall. Every target is
             padded to ~44px for touch.
           */}
-          <details class="group/svc border-b border-rule-gold/70 pb-2">
+          <details class="group/svc border-b border-burgundy/15 pb-2">
             <summary
-              class="nav-label flex cursor-pointer list-none items-center justify-between py-3 text-ivory/85 hover:text-gold [&::-webkit-details-marker]:hidden"
+              class="nav-label font-black flex cursor-pointer list-none items-center justify-between py-3 text-burgundy/80 hover:text-burgundy [&::-webkit-details-marker]:hidden"
             >
               Services
               <span
@@ -136,7 +135,7 @@ const linkBase =
                   <li>
                     <a
                       href={`/services/${service.slug}`}
-                      class="editorial block py-3 pl-3 text-small text-ivory/75 hover:text-gold"
+                      class="editorial font-black block py-3 pl-3 text-small text-burgundy/75 hover:text-burgundy"
                     >
                       {service.title}
                     </a>
@@ -147,14 +146,14 @@ const linkBase =
           </details>
 
           <div class="mt-2">
-            <a href="/books" class="nav-label block py-3 text-ivory/85 hover:text-gold">Books</a>
-            <a href="/authors" class="nav-label block py-3 text-ivory/85 hover:text-gold">Authors</a>
-            <a href="/journal" class="nav-label block py-3 text-ivory/85 hover:text-gold">Journal</a>
-            <a href="/about" class="nav-label block py-3 text-ivory/85 hover:text-gold">About</a>
-            <a href="/contact" class="nav-label block py-3 text-ivory/85 hover:text-gold">Contact</a>
+            <a href="/books" class="nav-label font-black block py-3 text-burgundy/80 hover:text-burgundy">Books</a>
+            <a href="/authors" class="nav-label font-black block py-3 text-burgundy/80 hover:text-burgundy">Authors</a>
+            <a href="/journal" class="nav-label font-black block py-3 text-burgundy/80 hover:text-burgundy">Journal</a>
+            <a href="/about" class="nav-label font-black block py-3 text-burgundy/80 hover:text-burgundy">About</a>
+            <a href="/contact" class="nav-label font-black block py-3 text-burgundy/80 hover:text-burgundy">Contact</a>
             <a
               href="/inquiry"
-              class="nav-label mt-3 block bg-gold px-5 py-3.5 text-center text-burgundy"
+              class="nav-label font-black mt-3 block border border-burgundy bg-burgundy px-5 py-3.5 text-center text-ivory"
             >
               Get Started
             </a>

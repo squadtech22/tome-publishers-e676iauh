@@ -34,7 +34,7 @@ const { category, posts, allCategories } = Astro.props;
 <Base title={category} description={`${category} articles from TOME Publishers.`}>
   <section class="grained bg-burgundy text-ivory">
     <div class="mx-auto max-w-6xl px-6 py-20">
-      <p class="label text-rule-gold mb-5">
+      <p class="label text-gold mb-5">
         <a href="/journal" class="hover:text-gold transition-colors">Journal</a>
       </p>
       <h1 class="text-ivory">{category}</h1>
@@ -51,7 +51,7 @@ const { category, posts, allCategories } = Astro.props;
         <li>
           <a
             href="/journal"
-            class="label border border-rule-gold/90 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors"
+            class="label border border-rule-warm/90 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors"
           >
             All
           </a>
@@ -65,7 +65,7 @@ const { category, posts, allCategories } = Astro.props;
                 class={
                   name === category
                     ? 'label border border-burgundy bg-burgundy px-4 py-2 text-ivory'
-                    : 'label border border-rule-gold/90 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors'
+                    : 'label border border-rule-warm/90 px-4 py-2 text-charcoal/70 hover:border-burgundy hover:text-burgundy transition-colors'
                 }
               >
                 {name}
