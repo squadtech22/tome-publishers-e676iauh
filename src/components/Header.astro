@@ -48,12 +48,12 @@ const linkBase =
               data-dropdown-trigger
               aria-expanded="false"
               aria-controls="services-menu"
-              class={`${linkBase} flex items-center gap-1.5 ${dropdownCurrent ? 'text-burgundy underline underline-offset-8 decoration-2' : ''}`}
+              class={`${linkBase} inline-flex items-baseline gap-1.5 ${dropdownCurrent ? 'text-burgundy underline underline-offset-8 decoration-2' : ''}`}
             >
               Other Services
               <span
                 aria-hidden="true"
-                class="text-[0.6em] transition-transform duration-200"
+                class="self-center text-[0.6em] transition-transform duration-200"
                 data-dropdown-caret>&#9660;</span
               >
             </button>

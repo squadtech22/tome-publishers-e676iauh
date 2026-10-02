@@ -4,6 +4,18 @@ import Base from '~/layouts/Base.astro';
 import Ornament from '~/components/Ornament.astro';
 import Bestsellers from '~/components/Bestsellers.astro';
 import heroSpines from '~/assets/generated/hero-spines2.png';
+import book1 from '~/assets/generated/book_1.png';
+import book2 from '~/assets/generated/book_2.png';
+import book3 from '~/assets/generated/book_3.png';
+import book4 from '~/assets/generated/book_4.png';
+import book5 from '~/assets/generated/book_5.png';
+import book6 from '~/assets/generated/book_6.png';
+import book7 from '~/assets/generated/book_7.png';
+import book8 from '~/assets/generated/book_8.png';
+import book9 from '~/assets/generated/book_9.png';
+import book10 from '~/assets/generated/book_10.png';
+
+const allBooks = [book1, book2, book3, book4, book5, book6, book7, book8, book9, book10];
 import { getBooks } from '~/lib/content';
 import {
   SERVICES,
@@ -88,16 +100,63 @@ const jsonLd = {
       </div>
 
       <div class="reveal hidden lg:block" style="--reveal-delay:2">
-        <div class="relative">
+        <div class="relative w-[92%] scale-125 mx-auto">
           <Image
             src={heroSpines}
-            alt="A shelf of clothbound books in burgundy and charcoal, tooled with gold bands"
+            alt="An empty wooden bookshelf"
             widths={[440, 660, 900]}
             sizes="(max-width: 1024px) 0px, 440px"
-            class="w-[92%] scale-125"
+            class="w-full h-auto drop-shadow-2xl"
             loading="eager"
           />
-         
+          
+          <!-- Shelf 1 (Top) -->
+          <div class="absolute top-[21.5%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+            {Array.from({ length: 17 }).map((_, i) => (
+              <Image
+                src={allBooks[(i * 7 + 1) % 10]}
+                alt="Book spine"
+                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                style={`height: ${75 + (i % 4) * 6}%;`}
+              />
+            ))}
+          </div>
+
+          <!-- Shelf 2 -->
+          <div class="absolute top-[36.3%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+            {Array.from({ length: 17 }).map((_, i) => (
+              <Image
+                src={allBooks[(i * 3 + 4) % 10]}
+                alt="Book spine"
+                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                style={`height: ${75 + ((i+1) % 4) * 6}%;`}
+              />
+            ))}
+          </div>
+
+          <!-- Shelf 3 -->
+          <div class="absolute top-[50.7%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+            {Array.from({ length: 17 }).map((_, i) => (
+              <Image
+                src={allBooks[(i * 9 + 2) % 10]}
+                alt="Book spine"
+                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                style={`height: ${75 + ((i+2) % 4) * 6}%;`}
+              />
+            ))}
+          </div>
+
+          <!-- Shelf 4 (Bottom) -->
+          <div class="absolute top-[65.2%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+            {Array.from({ length: 17 }).map((_, i) => (
+              <Image
+                src={allBooks[(i * 11 + 5) % 10]}
+                alt="Book spine"
+                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                style={`height: ${75 + ((i+3) % 4) * 6}%;`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
