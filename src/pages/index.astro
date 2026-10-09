@@ -99,8 +99,8 @@ const jsonLd = {
         </p>
       </div>
 
-      <div class="reveal hidden lg:block" style="--reveal-delay:2">
-        <div id="bookshelf-container" class="relative w-[92%] scale-125 mx-auto transition-transform">
+      <div class="reveal mx-auto w-full max-w-2xl lg:max-w-none" style="--reveal-delay:2">
+        <div id="bookshelf-container" class="relative mx-auto w-[92%] scale-100 transition-transform lg:scale-125">
           <Image
             src={heroSpines}
             alt="An empty wooden bookshelf"
@@ -663,7 +663,7 @@ const jsonLd = {
                 target.style.left = draggedLeft;
                 target.style.top = draggedTop;
                 target.style.transform = draggedTransform;
-                target.style.height = '100px';
+                target.style.height = `${floorBookHeight}px`;
                 target.style.width = 'auto';
               } else {
                 target.classList.remove('on-floor');
@@ -676,7 +676,7 @@ const jsonLd = {
               draggedBook.style.left = (e.clientX - floorRect.left - offsetX) + 'px';
               draggedBook.style.top = (e.clientY - floorRect.top - offsetY) + 'px';
               draggedBook.classList.add('on-floor');
-              draggedBook.style.height = '110px';
+              draggedBook.style.height = `${floorBookHeight}px`;
               draggedBook.style.width = 'auto';
               const rotZ = (Math.random() - 0.5) * 120;
               draggedBook.style.transform = `rotate(${rotZ}deg) scale(0.9)`;
@@ -699,7 +699,7 @@ const jsonLd = {
             draggedBook.style.left = (e.clientX - floorRect.left - offsetX) + 'px';
             draggedBook.style.top = (e.clientY - floorRect.top - offsetY) + 'px';
             draggedBook.classList.add('on-floor');
-            draggedBook.style.height = '110px';
+            draggedBook.style.height = `${floorBookHeight}px`;
             draggedBook.style.width = 'auto';
             const rotZ = (Math.random() - 0.5) * 120;
             draggedBook.style.transform = `rotate(${rotZ}deg) scale(0.9)`;
@@ -733,6 +733,9 @@ const jsonLd = {
       const shakeBtn = document.getElementById('shake-btn');
       const bookshelf = document.getElementById('bookshelf-container');
       const floor = document.getElementById('book-floor');
+      const floorBookHeight = bookshelf
+        ? Math.min(110, bookshelf.getBoundingClientRect().width * 0.18)
+        : 110;
       
       if (shakeBtn) {
         shakeBtn.addEventListener('click', () => {
@@ -770,7 +773,7 @@ const jsonLd = {
               
               b.style.left = `${randomLeft}%`;
               b.style.top = `${randomTop}%`;
-              b.style.height = '110px';
+              b.style.height = `${floorBookHeight}px`;
               b.style.width = 'auto';
               b.style.margin = '0';
               b.style.zIndex = Math.floor(Math.random() * 100);
@@ -824,6 +827,9 @@ const jsonLd = {
     }
     .draggable-book.on-floor {
       filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
+    }
+    .draggable-book {
+      touch-action: none;
     }
   </style>
 </Base>
