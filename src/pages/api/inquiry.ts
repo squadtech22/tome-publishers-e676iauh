@@ -1,7 +1,5 @@
 import type { APIRoute } from 'astro';
-import { Resend } from 'resend';
 import { inquirySchema, fieldErrors, MIN_ELAPSED_MS } from '~/lib/inquiry';
-import { notificationEmail, autoresponderEmail } from '~/lib/emails';
 
 // The only on-demand route on the site; everything else is prerendered.
 export const prerender = false;
@@ -18,6 +16,7 @@ export const POST: APIRoute = async ({ request }) => {
   const raw = {
     name: form.get('name'),
     email: form.get('email'),
+    phone: form.get('phone'),
     workingTitle: form.get('workingTitle') ?? '',
     stage: form.get('stage'),
     services: form.getAll('services'),
@@ -39,54 +38,24 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ ok: true });
   }
 
-  const apiKey = import.meta.env.RESEND_API_KEY;
-  const to = import.meta.env.INQUIRY_TO_EMAIL ?? 'hello@tomepublishers.com';
-  const from = import.meta.env.INQUIRY_FROM_EMAIL ?? 'noreply@tomepublishers.com';
-
-  if (!apiKey) {
-    console.error('[inquiry] RESEND_API_KEY is not set — inquiry was not delivered.');
-    return json(
-      { ok: false, errors: { form: 'We could not send your message right now. Please email hello@tomepublishers.com directly.' } },
-      500,
-    );
-  }
-
-  const resend = new Resend(apiKey);
-  const notification = notificationEmail(data);
-
-  // The notification must succeed — it is the actual lead. If it fails, tell
-  // the author, so a lost inquiry is never silently swallowed.
-  const sent = await resend.emails.send({
-    from: `TOME Publishers <${from}>`,
-    to: [to],
-    replyTo: data.email,
-    subject: notification.subject,
-    html: notification.html,
-    text: notification.text,
-  });
-
-  if (sent.error) {
-    console.error('[inquiry] Resend failed to deliver notification:', sent.error);
-    return json(
-      { ok: false, errors: { form: 'We could not send your message right now. Please email hello@tomepublishers.com directly.' } },
-      502,
-    );
-  }
-
-  // The autoresponder is a courtesy — never fail the submission over it.
+  // Insert into Firebase E-Book Portal
   try {
-    const confirmation = autoresponderEmail(data);
-    const ack = await resend.emails.send({
-      from: `TOME Publishers <${from}>`,
-      to: [data.email],
-      replyTo: to,
-      subject: confirmation.subject,
-      html: confirmation.html,
-      text: confirmation.text,
+    await fetch(`https://firestore.googleapis.com/v1/projects/e-book-portal-15733/databases/(default)/documents/tome?key=AIzaSyCjFdNgu4fKrXj5jWa0MlMi3EwnX22WLq8`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: {
+          source: { stringValue: "tome" },
+          name: { stringValue: data.name || "" },
+          email: { stringValue: data.email || "" },
+          phone: { stringValue: data.phone || "" },
+          message: { stringValue: data.message || "" },
+          createdAt: { timestampValue: new Date().toISOString() }
+        }
+      })
     });
-    if (ack.error) console.warn('[inquiry] autoresponder failed:', ack.error);
   } catch (err) {
-    console.warn('[inquiry] autoresponder threw:', err);
+    console.error("Firebase insertion error:", err);
   }
 
   // No-JS fallback: a normal form POST redirects instead of reading JSON.

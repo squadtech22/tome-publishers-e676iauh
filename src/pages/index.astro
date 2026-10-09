@@ -100,7 +100,7 @@ const jsonLd = {
       </div>
 
       <div class="reveal hidden lg:block" style="--reveal-delay:2">
-        <div class="relative w-[92%] scale-125 mx-auto">
+        <div id="bookshelf-container" class="relative w-[92%] scale-125 mx-auto transition-transform">
           <Image
             src={heroSpines}
             alt="An empty wooden bookshelf"
@@ -109,53 +109,65 @@ const jsonLd = {
             class="w-full h-auto drop-shadow-2xl"
             loading="eager"
           />
+          <button id="shake-btn" class="absolute top-[80.5%] left-[16.5%] w-[67%] h-[11%] z-30 flex items-center justify-center text-gold font-bold uppercase tracking-widest text-2xl cursor-pointer hover:bg-gold/10 transition-colors rounded-sm shadow-inner" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8);" title="Shake Bookshelf!">Shake me</button>
           
           <!-- Shelf 1 (Top) -->
-          <div class="absolute top-[21.5%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+          <div class="draggable-shelf absolute top-[21.5%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
             {Array.from({ length: 17 }).map((_, i) => (
               <Image
                 src={allBooks[(i * 7 + 1) % 10]}
                 alt="Book spine"
-                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                class="draggable-book w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-grab active:cursor-grabbing rounded-sm transform-gpu will-change-transform"
                 style={`height: ${75 + (i % 4) * 6}%;`}
+                data-original-height={`${75 + (i % 4) * 6}%`}
+                draggable="true"
               />
             ))}
           </div>
 
           <!-- Shelf 2 -->
-          <div class="absolute top-[36.3%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+          <div class="draggable-shelf absolute top-[36.3%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
             {Array.from({ length: 17 }).map((_, i) => (
               <Image
                 src={allBooks[(i * 3 + 4) % 10]}
                 alt="Book spine"
-                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                class="draggable-book w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-grab active:cursor-grabbing rounded-sm transform-gpu will-change-transform"
                 style={`height: ${75 + ((i+1) % 4) * 6}%;`}
+                data-original-height={`${75 + ((i+1) % 4) * 6}%`}
+                draggable="true"
               />
             ))}
           </div>
 
           <!-- Shelf 3 -->
-          <div class="absolute top-[50.7%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+          <div class="draggable-shelf absolute top-[50.7%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
             {Array.from({ length: 17 }).map((_, i) => (
               <Image
                 src={allBooks[(i * 9 + 2) % 10]}
                 alt="Book spine"
-                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                class="draggable-book w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-grab active:cursor-grabbing rounded-sm transform-gpu will-change-transform"
                 style={`height: ${75 + ((i+2) % 4) * 6}%;`}
+                data-original-height={`${75 + ((i+2) % 4) * 6}%`}
+                draggable="true"
               />
             ))}
           </div>
 
           <!-- Shelf 4 (Bottom) -->
-          <div class="absolute top-[65.2%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
+          <div class="draggable-shelf absolute top-[65.2%] left-[16.4%] w-[67.5%] h-[11%] flex items-end justify-center gap-0">
             {Array.from({ length: 17 }).map((_, i) => (
               <Image
                 src={allBooks[(i * 11 + 5) % 10]}
                 alt="Book spine"
-                class="w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-pointer rounded-sm transform-gpu will-change-transform"
+                class="draggable-book w-[5.1%] shrink-0 transition-all duration-300 hover:-translate-y-3 drop-shadow-sm hover:drop-shadow-xl cursor-grab active:cursor-grabbing rounded-sm transform-gpu will-change-transform"
                 style={`height: ${75 + ((i+3) % 4) * 6}%;`}
+                data-original-height={`${75 + ((i+3) % 4) * 6}%`}
+                draggable="true"
               />
             ))}
+          </div>
+          <!-- Floor Area -->
+          <div id="book-floor" class="draggable-floor absolute top-[75%] left-[16.4%] w-[67.5%] h-[23%] z-50 opacity-0 pointer-events-none transition-opacity duration-1000">
           </div>
         </div>
       </div>
@@ -500,4 +512,318 @@ const jsonLd = {
       </p>
     </div>
   </section>
+
+  <script>
+    function setupDragAndDrop() {
+      const books = document.querySelectorAll('.draggable-book');
+      
+      let draggedBook = null;
+      let clone = null;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      books.forEach(book => {
+        // Disable native drag just in case
+        book.removeAttribute('draggable');
+        
+        // Use pointerdown to start custom drag
+        book.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return; // Only left click
+          if (draggedBook) return; // Only one book at a time
+          
+          // Ensure only the top book under the cursor is pickable
+          const elementsUnderCursor = document.elementsFromPoint(e.clientX, e.clientY);
+          const topBook = elementsUnderCursor.find(el => el.classList && el.classList.contains('draggable-book'));
+          if (topBook && topBook !== book) return; // Ignore if there's a book above this one
+
+          e.preventDefault(); // prevent native drag or text selection
+          
+          draggedBook = book;
+          
+          const rect = book.getBoundingClientRect();
+          offsetX = e.clientX - rect.left;
+          offsetY = e.clientY - rect.top;
+          
+          clone = book.cloneNode(true);
+          clone.style.position = 'fixed';
+          clone.style.zIndex = '9999';
+          clone.style.pointerEvents = 'none'; // Pass through clicks
+          if (book.classList.contains('on-floor')) {
+            clone.style.height = (book.offsetHeight * 1.25) + 'px';
+            clone.style.width = (book.offsetWidth * 1.25) + 'px';
+          } else {
+            clone.style.width = rect.width + 'px';
+            clone.style.height = rect.height + 'px';
+          }
+          clone.style.left = rect.left + 'px';
+          clone.style.top = rect.top + 'px';
+          clone.style.transition = 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)';
+          clone.style.margin = '0';
+          clone.style.opacity = '1';
+          requestAnimationFrame(() => {
+            if (clone) clone.style.transform = 'scale(1.05)';
+          });
+          clone.classList.remove('hover:-translate-y-3', 'hover:drop-shadow-xl', 'cursor-grab', 'active:cursor-grabbing');
+          
+          document.body.appendChild(clone);
+          
+          // Make original blank
+          book.style.opacity = '0';
+          
+          document.addEventListener('pointermove', onPointerMove);
+          document.addEventListener('pointerup', onPointerUp);
+        });
+      });
+      
+      function onPointerMove(e) {
+        if (!clone) return;
+        clone.style.left = (e.clientX - offsetX) + 'px';
+        clone.style.top = (e.clientY - offsetY) + 'px';
+      }
+      
+      function onPointerUp(e) {
+        if (!draggedBook) return;
+        
+        document.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerup', onPointerUp);
+        
+        let target = document.elementFromPoint(e.clientX, e.clientY);
+        if (target && !target.classList.contains('draggable-book') && !target.classList.contains('draggable-shelf') && !target.classList.contains('draggable-floor')) {
+           target = target.closest('.draggable-book, .draggable-shelf, .draggable-floor');
+        }
+        
+        let isTargetFullShelf = false;
+        if (target) {
+          const shelfTarget = target.classList.contains('draggable-shelf') ? target : target.closest('.draggable-shelf');
+          if (shelfTarget && shelfTarget.querySelectorAll('.draggable-book').length >= 17) {
+            isTargetFullShelf = true;
+          }
+        }
+        
+        // Magnetic snap to the closest available shelf
+        if (!target || isTargetFullShelf || (target.classList && target.classList.contains('draggable-floor')) || (target.closest && target.closest('#book-floor'))) {
+           const shelves = document.querySelectorAll('.draggable-shelf');
+           let closestShelf = null;
+           let minDistance = 150;
+           
+           for (const shelf of shelves) {
+             if (shelf.querySelectorAll('.draggable-book').length >= 17) continue; // Skip full shelves
+             
+             const rect = shelf.getBoundingClientRect();
+             const dx = Math.max(rect.left - e.clientX, 0, e.clientX - rect.right);
+             const dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom);
+             const dist = Math.sqrt(dx*dx + dy*dy);
+             
+             if (dist < minDistance) {
+               minDistance = dist;
+               closestShelf = shelf;
+             }
+           }
+           
+           if (closestShelf) {
+             target = closestShelf;
+           }
+        }
+        
+        const floorContainer = document.getElementById('book-floor');
+        
+        if (target) {
+          if (target.classList.contains('draggable-book') && target !== draggedBook) {
+            const targetInShelf = target.closest('.draggable-shelf');
+            if (targetInShelf) {
+              const draggedWasOnFloor = draggedBook.closest('.draggable-floor');
+              const draggedLeft = draggedBook.style.left;
+              const draggedTop = draggedBook.style.top;
+              const draggedTransform = draggedBook.style.transform;
+              
+              // Swap
+              const draggedNextSibling = draggedBook.nextSibling;
+              const draggedParent = draggedBook.parentNode;
+              const targetNextSibling = target.nextSibling;
+              const targetParent = target.parentNode;
+              
+              if (draggedNextSibling) draggedParent.insertBefore(target, draggedNextSibling);
+              else draggedParent.appendChild(target);
+              
+              if (targetNextSibling) targetParent.insertBefore(draggedBook, targetNextSibling);
+              else targetParent.appendChild(draggedBook);
+              
+              // Reset draggedBook styles to fit in shelf
+              draggedBook.classList.remove('on-floor');
+              draggedBook.style.position = '';
+              draggedBook.style.left = '';
+              draggedBook.style.top = '';
+              draggedBook.style.transform = 'none';
+              draggedBook.style.height = draggedBook.dataset.originalHeight;
+              draggedBook.style.width = '';
+              
+              if (draggedWasOnFloor) {
+                target.classList.add('on-floor');
+                target.style.position = 'absolute';
+                target.style.left = draggedLeft;
+                target.style.top = draggedTop;
+                target.style.transform = draggedTransform;
+                target.style.height = '100px';
+                target.style.width = 'auto';
+              } else {
+                target.classList.remove('on-floor');
+              }
+            } else {
+              // Target is on floor, just place draggedBook on floor
+              floorContainer.appendChild(draggedBook);
+              const floorRect = floorContainer.getBoundingClientRect();
+              draggedBook.style.position = 'absolute';
+              draggedBook.style.left = (e.clientX - floorRect.left - offsetX) + 'px';
+              draggedBook.style.top = (e.clientY - floorRect.top - offsetY) + 'px';
+              draggedBook.classList.add('on-floor');
+              draggedBook.style.height = '110px';
+              draggedBook.style.width = 'auto';
+              const rotZ = (Math.random() - 0.5) * 120;
+              draggedBook.style.transform = `rotate(${rotZ}deg) scale(0.9)`;
+            }
+          } else if (target.classList.contains('draggable-shelf')) {
+            if (target.querySelectorAll('.draggable-book').length < 17) {
+              target.appendChild(draggedBook);
+              draggedBook.classList.remove('on-floor');
+              draggedBook.style.position = '';
+              draggedBook.style.left = '';
+              draggedBook.style.top = '';
+              draggedBook.style.transform = 'none';
+              draggedBook.style.height = draggedBook.dataset.originalHeight;
+              draggedBook.style.width = '';
+            }
+          } else if (target.classList.contains('draggable-floor') || target.closest('#book-floor')) {
+            floorContainer.appendChild(draggedBook);
+            const floorRect = floorContainer.getBoundingClientRect();
+            draggedBook.style.position = 'absolute';
+            draggedBook.style.left = (e.clientX - floorRect.left - offsetX) + 'px';
+            draggedBook.style.top = (e.clientY - floorRect.top - offsetY) + 'px';
+            draggedBook.classList.add('on-floor');
+            draggedBook.style.height = '110px';
+            draggedBook.style.width = 'auto';
+            const rotZ = (Math.random() - 0.5) * 120;
+            draggedBook.style.transform = `rotate(${rotZ}deg) scale(0.9)`;
+          }
+        }
+        
+        const currentDragged = draggedBook;
+        const currentClone = clone;
+        
+        if (currentClone) {
+          const finalRect = currentDragged.getBoundingClientRect();
+          currentClone.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          currentClone.style.left = finalRect.left + 'px';
+          currentClone.style.top = finalRect.top + 'px';
+          currentClone.style.width = finalRect.width + 'px';
+          currentClone.style.height = finalRect.height + 'px';
+          currentClone.style.transform = currentDragged.style.transform && currentDragged.style.transform !== 'none' ? currentDragged.style.transform : 'scale(1)';
+          
+          setTimeout(() => {
+            if (currentDragged) currentDragged.style.opacity = '1';
+            if (currentClone) currentClone.remove();
+          }, 300);
+        } else if (currentDragged) {
+          currentDragged.style.opacity = '1';
+        }
+        
+        draggedBook = null;
+        clone = null;
+      }
+      
+      const shakeBtn = document.getElementById('shake-btn');
+      const bookshelf = document.getElementById('bookshelf-container');
+      const floor = document.getElementById('book-floor');
+      
+      if (shakeBtn) {
+        shakeBtn.addEventListener('click', () => {
+          if (!bookshelf) return;
+          
+          const allBooksOnShelves = document.querySelectorAll('.draggable-shelf .draggable-book');
+          if (allBooksOnShelves.length === 0) return;
+          
+          bookshelf.style.animation = 'shake 0.4s ease-in-out infinite';
+          
+          setTimeout(() => {
+            bookshelf.style.animation = 'none';
+            floor.classList.remove('opacity-0', 'pointer-events-none');
+            floor.classList.add('opacity-100');
+            
+            // FLIP animation
+            const firstRects = new Map();
+            allBooksOnShelves.forEach(b => {
+              firstRects.set(b, b.getBoundingClientRect());
+            });
+            
+            allBooksOnShelves.forEach(b => {
+              floor.appendChild(b);
+              b.style.position = 'absolute';
+              
+              let r = (Math.random() + Math.random() + Math.random()) / 3; 
+              const randomLeft = r * 85; 
+              
+              const distFromCenter = Math.abs(50 - randomLeft); 
+              const minTop = distFromCenter * 1.5; 
+              let randomTop = minTop + Math.random() * (75 - minTop);
+              if (randomTop > 75) randomTop = 75;
+              
+              const rotZ = (Math.random() - 0.5) * 140; 
+              
+              b.style.left = `${randomLeft}%`;
+              b.style.top = `${randomTop}%`;
+              b.style.height = '110px';
+              b.style.width = 'auto';
+              b.style.margin = '0';
+              b.style.zIndex = Math.floor(Math.random() * 100);
+              b.dataset.finalTransform = `rotate(${rotZ}deg) scale(0.9)`;
+            });
+            
+            requestAnimationFrame(() => {
+              allBooksOnShelves.forEach(b => {
+                const lastRect = b.getBoundingClientRect();
+                const firstRect = firstRects.get(b);
+                const deltaX = firstRect.left - lastRect.left;
+                const deltaY = firstRect.top - lastRect.top;
+                
+                b.style.transition = 'none';
+                b.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(0deg)`;
+              });
+              
+              requestAnimationFrame(() => {
+                allBooksOnShelves.forEach((b, i) => {
+                  setTimeout(() => {
+                    b.classList.add('on-floor');
+                    b.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    b.style.transform = b.dataset.finalTransform;
+                  }, Math.random() * 800);
+                });
+              });
+            });
+            
+          }, 800);
+        });
+      }
+    }
+
+    document.addEventListener('astro:page-load', setupDragAndDrop);
+    setupDragAndDrop();
+  </script>
+
+  <style is:global>
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+    .draggable-book.on-floor {
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
+    }
+  </style>
 </Base>

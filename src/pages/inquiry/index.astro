@@ -3,9 +3,9 @@ import Base from '~/layouts/Base.astro';
 import { MANUSCRIPT_STAGES, SERVICES } from '~/lib/inquiry';
 
 const field =
-  'w-full border border-charcoal/20 bg-white px-4 py-3 text-body focus:border-burgundy focus:outline-none';
+  'w-full border border-charcoal/20 bg-white px-4 py-3 text-body focus:border-burgundy focus:outline-none transition-colors';
 const labelCls = 'label block mb-2 text-charcoal/70';
-const errCls = 'mt-2 text-small text-burgundy hidden';
+const errCls = 'mt-2 text-small text-red-600 font-medium hidden';
 ---
 
 <Base
@@ -48,6 +48,12 @@ const errCls = 'mt-2 text-small text-burgundy hidden';
         <label for="email" class={labelCls}>Email <span class="text-burgundy">*</span></label>
         <input id="email" name="email" type="email" required autocomplete="email" class={field} />
         <p class={errCls} data-error-for="email"></p>
+      </div>
+
+      <div>
+        <label for="phone" class={labelCls}>Phone <span class="text-burgundy">*</span></label>
+        <input id="phone" name="phone" type="tel" required autocomplete="tel" class={field} />
+        <p class={errCls} data-error-for="phone"></p>
       </div>
 
       <div>
@@ -130,9 +136,14 @@ const errCls = 'mt-2 text-small text-burgundy hidden';
           required
           minlength="20"
           class={field + ' editorial'}></textarea>
-        <p class="mt-2 text-small text-charcoal/50">
-          The more you tell us, the more useful our first reply will be.
-        </p>
+        <div class="flex justify-between items-start gap-4">
+          <p class="mt-2 text-small text-charcoal/50">
+            The more you tell us, the more useful our first reply will be.
+          </p>
+          <p id="char-count" class="mt-2 text-small text-charcoal/50 whitespace-nowrap">
+            0 / 5000 characters
+          </p>
+        </div>
         <p class={errCls} data-error-for="message"></p>
       </div>
 
@@ -155,14 +166,25 @@ const errCls = 'mt-2 text-small text-burgundy hidden';
     const elapsed = document.getElementById('elapsed') as HTMLInputElement;
     const btn = document.getElementById('submit-btn') as HTMLButtonElement;
     const formError = document.getElementById('form-error') as HTMLElement;
+    const messageInput = document.getElementById('message') as HTMLTextAreaElement;
+    const charCount = document.getElementById('char-count');
+
+    if (messageInput && charCount) {
+      messageInput.addEventListener('input', () => {
+        charCount.textContent = `${messageInput.value.length} / 5000 characters`;
+      });
+    }
 
     const clearErrors = () => {
       form.querySelectorAll<HTMLElement>('[data-error-for]').forEach((el) => {
         el.textContent = '';
         el.classList.add('hidden');
       });
+      form.querySelectorAll('.border-red-600').forEach(el => {
+        el.classList.remove('border-red-600');
+      });
       formError.textContent = '';
-      formError.classList.add('hidden');
+      formError.className = 'hidden border-l-4 px-5 py-4'; // Reset classes
     };
 
     const showErrors = (errors: Record<string, string>) => {
@@ -173,10 +195,12 @@ const errCls = 'mt-2 text-small text-burgundy hidden';
         if (el) {
           el.textContent = message;
           el.classList.remove('hidden');
+          const input = form.querySelector(`[name="${key}"]`);
+          if (input) input.classList.add('border-red-600');
           if (!first) first = el;
         } else {
           formError.textContent = message;
-          formError.classList.remove('hidden');
+          formError.className = 'border-l-4 border-red-600 bg-red-50 px-5 py-4 text-red-800';
           if (!first) first = formError;
         }
       }
@@ -203,7 +227,11 @@ const errCls = 'mt-2 text-small text-burgundy hidden';
         const result = await response.json().catch(() => ({ ok: false }));
 
         if (result.ok) {
-          window.location.href = '/inquiry/thank-you';
+          form.reset();
+          formError.textContent = 'Inquiry sent successfully! We will get back to you soon.';
+          formError.className = 'border-l-4 border-green-600 bg-green-50 px-5 py-4 text-green-800';
+          btn.textContent = 'Sent!';
+          formError.scrollIntoView({ block: 'center', behavior: 'smooth' });
           return;
         }
 

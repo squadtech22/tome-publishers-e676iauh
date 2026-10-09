@@ -24,6 +24,7 @@ export const SERVICES = [
 export const inquirySchema = z.object({
   name: z.string().trim().min(2, 'Please enter your name.').max(120),
   email: z.email('Please enter a valid email address.').max(200),
+  phone: z.string().trim().min(7, 'Please enter a valid phone number.').max(50),
   workingTitle: z.string().trim().max(200).optional().or(z.literal('')),
   stage: z.enum(MANUSCRIPT_STAGES, { message: 'Please choose a stage.' }),
   services: z
